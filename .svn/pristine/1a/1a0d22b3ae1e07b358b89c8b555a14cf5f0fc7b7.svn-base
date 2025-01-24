@@ -1,0 +1,27 @@
+<?php $__env->startSection('content'); ?>
+<div class="card mt-1">
+    <div class="card-header">
+        <h4>Configuração Mercado Livre</h4>
+
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()->fill($item)
+        ->post()
+        ->route('mercado-livre-config.store')
+        ->multipart(); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('mercado_livre_config._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+
+        <?php if($item != null): ?>
+        <a href="<?php echo e(route('mercado-livre.get-code')); ?>">Solicitar novo token</a>
+        <?php endif; ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Configuração Mercado Livre'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/mercado_livre_config/index.blade.php ENDPATH**/ ?>

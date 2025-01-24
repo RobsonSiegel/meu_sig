@@ -1,0 +1,30 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+        <h4>Editar Modelo</h4>
+        <div style="text-align: right; margin-top: -35px;">
+            <a href="<?php echo e(route('modelo-etiquetas.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()->fill($item)
+        ->put()
+        ->route('modelo-etiquetas.update', [$item->id]); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('modelo_etiqueta._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('js'); ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Editar Modelo'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/modelo_etiqueta/edit.blade.php ENDPATH**/ ?>

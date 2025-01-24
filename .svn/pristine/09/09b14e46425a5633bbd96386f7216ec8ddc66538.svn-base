@@ -1,0 +1,104 @@
+<?php $__env->startSection('content'); ?>
+<div class="mt-3">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-2">
+                    <a href="<?php echo e(route('planos.create')); ?>" class="btn btn-success">
+                        <i class="ri-add-circle-fill"></i>
+                        Novo Plano
+                    </a>
+                </div>
+                <hr class="mt-3">
+                <div class="col-lg-12">
+                    <?php echo Form::open()->fill(request()->all())
+                    ->get(); ?>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <?php echo Form::text('nome', 'Pesquisar por nome'); ?>
+
+                        </div>
+                        <div class="col-md-3 text-left">
+                            <br>
+                            <button class="btn btn-primary" type="submit"> <i class="ri-search-line"></i>Pesquisar</button>
+                            <a id="clear-filter" class="btn btn-danger" href="<?php echo e(route('planos.index')); ?>"><i class="ri-eraser-fill"></i>Limpar</a>
+                        </div>
+                    </div>
+                    <?php echo Form::close(); ?>
+
+                </div>
+                <div class="col-12 mt-3">
+                    <div class="table-responsive-sm">
+                        <table class="table table-centered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th></th>
+                                    <th>Nome</th>
+                                    <th>Data de cadastro</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                    <th>Auto cadastro</th>
+                                    <th>Fiscal</th>
+                                    <th>Segmento</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+
+                                    <td><img class="img-60" src="<?php echo e($item->img); ?>"></td>
+                                    <td><?php echo e($item->nome); ?></td>
+                                    <td><?php echo e(__data_pt($item->created_at, 1)); ?></td>
+                                    <td><?php echo e(__moeda($item->valor)); ?></td>
+                                    <td>
+                                        <?php if($item->status): ?>
+                                        <i class="ri-checkbox-circle-fill text-success"></i>
+                                        <?php else: ?>
+                                        <i class="ri-close-circle-fill text-danger"></i>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if($item->auto_cadastro): ?>
+                                        <i class="ri-checkbox-circle-fill text-success"></i>
+                                        <?php else: ?>
+                                        <i class="ri-close-circle-fill text-danger"></i>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if($item->fiscal): ?>
+                                        <i class="ri-checkbox-circle-fill text-success"></i>
+                                        <?php else: ?>
+                                        <i class="ri-close-circle-fill text-danger"></i>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo e($item->segmento ? $item->segmento->nome : ''); ?></td>
+                                    <td>
+                                        <form action="<?php echo e(route('planos.destroy', $item->id)); ?>" method="post" id="form-<?php echo e($item->id); ?>">
+                                            <?php echo method_field('delete'); ?>
+                                            <a class="btn btn-warning btn-sm" href="<?php echo e(route('planos.edit', [$item->id])); ?>">
+                                                <i class="ri-pencil-fill"></i>
+                                            </a>
+
+                                            <?php echo csrf_field(); ?>
+                                            <button type="button" class="btn btn-delete btn-sm btn-danger">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php echo $data->appends(request()->all())->links(); ?>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', ['title' => 'Planos'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/planos/index.blade.php ENDPATH**/ ?>

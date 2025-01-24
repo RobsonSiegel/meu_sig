@@ -1,0 +1,22 @@
+<?php $__env->startSection('content'); ?>
+<div class="card mt-1">
+    <div class="card-header">
+        <h4>Arquivo Sped ICMS</h4>
+
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()
+        ->post()
+        ->route('sped.store'); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('sped._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Arquivo Sped ICMS'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/sped/index.blade.php ENDPATH**/ ?>

@@ -1,0 +1,18 @@
+<?php $__env->startSection('content'); ?>
+<div class="card mt-1"> 
+    <div class="card-body">
+        <?php echo Form::open()->fill($item)
+        ->put()
+        ->route('config.update', [$item->id])
+        ->multipart(); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('config.configuracao', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Editar Empresa'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/config/edit.blade.php ENDPATH**/ ?>

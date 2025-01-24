@@ -1,0 +1,34 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+
+        <h4>Importação de XML</h4>
+        <div style="text-align: right; margin-top: -35px;">
+            <?php if(__countLocalAtivo() > 1 && isset($caixa)): ?>
+            <h5 class="mt-2">Local: <strong class="text-danger"><?php echo e($caixa->localizacao ? $caixa->localizacao->descricao : ''); ?></strong></h5>
+            <?php endif; ?>
+            <a href="<?php echo e(route('compras.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()
+        ->post()
+        ->route('compras.finish-xml')
+        ->multipart(); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('compras._forms_xml', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->startSection('js'); ?>
+<script src="/js/nfe.js"></script>
+<?php $__env->stopSection(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Importação de XML'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/compras/import_xml.blade.php ENDPATH**/ ?>

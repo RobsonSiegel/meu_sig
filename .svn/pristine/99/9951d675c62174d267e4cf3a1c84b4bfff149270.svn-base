@@ -1,0 +1,22 @@
+<?php $__env->startSection('content'); ?>
+
+<?php echo Form::open()
+->post()
+->route('frontbox.store')->id('form-pdv'); ?>
+
+<div class="pl-lg-4">
+    <?php echo $__env->make('front_box._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+</div>
+<?php echo Form::close(); ?>
+
+
+<?php echo $__env->make('modals._novo_cliente', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+<?php $__env->stopSection(); ?>
+
+
+
+
+
+<?php echo $__env->make('front_box.default', 
+['title' => !isset($title) ? (isset($pedido) ? isset($isDelivery) ? ('Finalizando Pedido Delivery ' . $pedido->id) : ('Finalizando Comanda ' . $pedido->comanda) : 'Nova Venda - PDV') : $title ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/front_box/create.blade.php ENDPATH**/ ?>

@@ -1,0 +1,15 @@
+<?php $__env->startSection('content'); ?>
+
+<?php echo Form::open()
+->post()
+->route('pre-venda.store'); ?>
+
+<div class="">
+    <?php echo $__env->make('pre_venda._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+</div>
+<?php echo Form::close(); ?>
+
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('front_box.default', ['title' => 'PRÉ VENDA'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/pre_venda/create.blade.php ENDPATH**/ ?>

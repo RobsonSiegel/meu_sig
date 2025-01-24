@@ -1,0 +1,32 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+        <h4>Configuração da Empresa</h4>
+        <div style="text-align: right; margin-top: -35px;">
+            <a href="<?php echo e(route('empresas.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()->fill($empresa)
+        ->post()
+        ->route('config.store')
+        ->multipart(); ?>
+
+        <div class="pl-lg-4">
+
+            <?php if(isset($empresa->id)): ?>
+            <?php echo $__env->make('config.edit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php else: ?>
+            <?php echo $__env->make('empresas._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php endif; ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Configuração da Empresa'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/config/index.blade.php ENDPATH**/ ?>

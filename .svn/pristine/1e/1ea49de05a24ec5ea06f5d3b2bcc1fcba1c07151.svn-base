@@ -1,0 +1,38 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+        <h4>Novo Padrão</h4>
+        <div style="text-align: right; margin-top: -35px;">
+            <a href="<?php echo e(route('produtopadrao-tributacao.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()
+        ->post()
+        ->route('produtopadrao-tributacao.store'); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('padrao_tributacao._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('js'); ?>
+<script type="text/javascript">
+    $(document).on("blur", "#inp-cfop_estadual", function () {
+
+        let v = $(this).val().substring(1,4)
+        $("#inp-cfop_outro_estado").val('6'+v)
+        $("#inp-cfop_entrada_estadual").val('1'+v)
+        $("#inp-cfop_entrada_outro_estado").val('2'+v)
+    })
+</script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Novo Padrão'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/padrao_tributacao/create.blade.php ENDPATH**/ ?>

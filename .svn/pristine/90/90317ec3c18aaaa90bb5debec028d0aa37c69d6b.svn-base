@@ -1,0 +1,88 @@
+<?php $__env->startSection('css'); ?>
+<style type="text/css">
+    .super{
+        background: #27BCC2;
+    }
+    .super td{
+        color: #fff;
+    }
+</style>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+<div class="mt-3">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-2">
+                </div>
+                <hr class="mt-3">
+                <div class="col-lg-12">
+                    <?php echo Form::open()->fill(request()->all())
+                    ->get(); ?>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <?php echo Form::text('name', 'Pesquisar por nome'); ?>
+
+                        </div>
+                        <div class="col-md-3 text-left ">
+                            <br>
+                            <button class="btn btn-primary" type="submit"> <i class="ri-search-line"></i>Pesquisar</button>
+                            <a id="clear-filter" class="btn btn-danger" href="<?php echo e(route('usuario-super.index')); ?>"><i class="ri-eraser-fill"></i>Limpar</a>
+                        </div>
+                    </div>
+                    <?php echo Form::close(); ?>
+
+                </div>
+                <div class="col-md-12 mt-3">
+                    <div class="table-responsive-sm">
+                        <table class="table table-centered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Empresa</th>
+                                    <th>Controle de acesso</th>
+                                    <th width="10%">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr class="<?php if($item->email == env('MAILMASTER')): ?> super <?php endif; ?>">
+                                    <td><?php echo e($item->name); ?></td>
+                                    <td><?php echo e($item->email); ?></td>
+                                    <td>
+                                        <?php echo e($item->empresa ? $item->empresa->empresa->nome : ''); ?>
+
+                                        <?php if($item->email == env('MAILMASTER')): ?> SUPER <?php endif; ?>
+                                    </td>
+                                    <td><?php echo e(sizeof($item->roles) > 0 ? $item->roles->first()->description : ''); ?></td>
+                                    <td>
+                                        <?php if($item->email != env('MAILMASTER')): ?>
+                                        <form action="<?php echo e(route('usuario-super.destroy', $item->id)); ?>" method="post" id="form-<?php echo e($item->id); ?>">
+                                            <?php echo method_field('delete'); ?>
+                                            <a class="btn btn-warning btn-sm" href="<?php echo e(route('usuario-super.edit', [$item->id])); ?>">
+                                                <i class="ri-edit-line"></i>
+                                            </a> 
+                                            <?php echo csrf_field(); ?>
+                                            <button type="button" class="btn btn-delete btn-sm btn-danger">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </form>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php echo $data->appends(request()->all())->links(); ?>
+
+            </div>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Usuários'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/usuarios_super/index.blade.php ENDPATH**/ ?>

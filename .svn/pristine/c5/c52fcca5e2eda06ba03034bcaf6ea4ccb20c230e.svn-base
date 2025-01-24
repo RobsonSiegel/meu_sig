@@ -1,0 +1,79 @@
+<?php $__env->startSection('content'); ?>
+
+<nav id="navigation">
+	<div class="container">
+		<div id="responsive-nav">
+			<!-- NAV -->
+			<ul class="main-nav nav navbar-nav">
+				<li class="active"><a href="<?php echo e(route('loja.index', ['link='.$config->loja_id])); ?>">Home</a></li>
+				<?php $__currentLoopData = $categorias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+				<li><a href="<?php echo e(route('loja.produtos-categoria', [$c->hash_ecommerce, 'link='.$config->loja_id])); ?>"><?php echo e($c->nome); ?></a></li>
+				<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<div class="section">
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<div class="section-title">
+					<h3 class="title">Produtos em Destaque</h3>
+				</div>
+			</div>
+
+			<div class="col-md-12">
+				<div class="row">
+					<div class="products-tabs">
+						<!-- tab -->
+						<div id="tab1" class="tab-pane active">
+							<div class="products-slick" data-nav="#slick-nav-1">
+								
+								<?php $__currentLoopData = $produtosEmDestaque; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<div class="product">
+									<div class="product-img">
+										<img src="<?php echo e($p->img); ?>" alt="" style="height: 250px;">
+										<div class="product-label">
+											<?php if($p->percentual_desconto > 0): ?>
+											<span class="sale">-<?php echo e($p->percentual_desconto); ?>%</span>
+											<?php endif; ?>
+											<span class="new">Destaque</span>
+										</div>
+									</div>
+									<div class="product-body">
+										<p class="product-category"><?php echo e($p->categoria ? $p->categoria->nome : 'Geral'); ?></p>
+										<h3 class="product-name"><a href="#"><?php echo e($p->nome); ?></a></h3>
+										<?php if($p->valor_ecommerce > 0): ?>
+										<h4 class="product-price">R$<?php echo e(__moeda($p->valor_ecommerce)); ?>
+
+											<?php if($p->percentual_desconto > 0): ?>
+											<del class="product-old-price">
+												R$ <?php echo e(__moeda($p->valor_ecommerce + ($p->valor_ecommerce*$p->percentual_desconto/100))); ?>
+
+											</del>
+											<?php endif; ?>
+										</h4>
+										<?php endif; ?>
+										
+									</div>
+									<div class="add-to-cart">
+										<a href="<?php echo e(route('loja.produto-detalhe', [$p->hash_ecommerce, 'link='.$config->loja_id])); ?>"><button class="add-to-cart-btn">
+											<i class="fa fa-shopping-cart"></i> 
+											Adicionar ao carrinho
+										</button></a>
+									</div>
+								</div>
+								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('loja.default', ['title' => 'Home'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/loja/index.blade.php ENDPATH**/ ?>

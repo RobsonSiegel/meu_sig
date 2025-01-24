@@ -1,0 +1,50 @@
+<div class="row g-2">
+    <div class="col-md-5">
+        <?php echo Form::select('cliente_id', 'Cliente')->attrs(['class' => 'select2'])->options(isset($item) ? [$item->cliente_id => $item->cliente->razao_social] : [])
+        ->required(); ?>
+
+    </div>
+    <div class="col-md-2">
+        <label class="">Início</label>
+        <input required type="text" name="data_inicio" id="datetime-datepicker" class="form-control" value="<?php echo e(isset($item) ? $item->data_inicio : ''); ?>">
+        <?php if($errors->has('data_inicio')): ?>
+        <label class="text-danger">Campo Obrigatório</label>
+        <?php endif; ?>
+    </div>
+    <div class="col-md-2">
+        <label class="">Previsão de Entrega</label>
+        <input required type="text" name="data_entrega" id="datetime-datepicker2" class="form-control" value="<?php echo e(isset($item) ? $item->data_entrega : ''); ?>">
+        <?php if($errors->has('data_entrega')): ?>
+        <label class="text-danger">Campo Obrigatório</label>
+        <?php endif; ?>
+    </div>
+    <div class="col-md-3">
+        <?php echo Form::select('funcionario_id', 'Funcionário', ['' => 'Selecione'] + $funcionario->pluck('nome', 'id')->all())->attrs(['class' => 'form-select']); ?>
+
+    </div>
+
+    <div class="col-md-12">
+        <?php echo Form::textarea('descricao', 'Descrição')
+        ->attrs(['rows' => '10', 'class' => 'tiny']); ?>
+
+    </div>
+
+    <hr class="mt-4">
+    <div class="col-12" style="text-align: right;">
+        <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+    </div>
+</div>
+
+<?php $__env->startSection('js'); ?>
+<script src="/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        tinymce.init({ selector: 'textarea.tiny', language: 'pt_BR'})
+
+        setTimeout(() => {
+            $('.tox-promotion, .tox-statusbar__right-container').addClass('d-none')
+        }, 500)
+    })
+</script>
+<?php $__env->stopSection(); ?>
+<?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/ordem_servico/_forms.blade.php ENDPATH**/ ?>

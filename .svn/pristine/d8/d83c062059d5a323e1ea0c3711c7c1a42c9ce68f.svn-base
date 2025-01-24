@@ -1,0 +1,20 @@
+<?php $__currentLoopData = $produtos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $prod): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<div class="card-group col-xl-4 col-md-6 col-sm-6" onclick="addProdutos('<?php echo e($prod->id); ?>')">
+    <div class="row" style="border: 1px solid #DEE2E6; border-radius: 5px; margin-left: 0.1px; margin-top: 1px;">
+        
+        <img src="<?php echo e($prod->img); ?>" class="card-img-top mt-1" alt="..." style="opacity: 0.8; height: 140px; border-radius: 10px; width: 100vw;">
+        
+        <div class="row mt-2">
+            <p class="text-center text-black"><?php echo e($prod->nome); ?></p>
+        </div>
+        <div class="row">
+            <?php if($prod->valor_unitario > 0): ?>
+            <p class="text-center text-success fw-bold">R$ <?php echo e(__moeda($prod->valor_unitario)); ?></p>
+            <?php else: ?>
+            <p class="text-center text-success fw-bold">--</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+<?php /**PATH C:\FontesVersaoSLYM\resources\views/produtos/cards.blade.php ENDPATH**/ ?>

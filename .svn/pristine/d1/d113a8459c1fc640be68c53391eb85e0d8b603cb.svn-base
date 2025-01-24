@@ -1,0 +1,27 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+        <h4>Editar Cliente</h4>
+        <div style="text-align: right; margin-top: -35px;">
+            <a href="<?php echo e(route('clientes.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <?php echo Form::open()->fill($item)
+        ->put()
+        ->route('clientes.update', [$item->id])
+        ->multipart(); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('clientes._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Editar Cliente'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/clientes/edit.blade.php ENDPATH**/ ?>

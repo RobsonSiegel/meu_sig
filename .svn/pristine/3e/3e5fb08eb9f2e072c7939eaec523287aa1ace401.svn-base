@@ -1,0 +1,40 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+        <h3>Editar Cadastro da Empresa</h3>
+        <div style="text-align: right;" class="">
+            <a href="<?php echo e(route('empresas.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <?php if($infoCertificado): ?>
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Dados do certificado</h4>
+                    <h6>serial <strong><?php echo e($infoCertificado['serial']); ?></strong></h6>
+                    <h6>início <strong><?php echo e($infoCertificado['inicio']); ?></strong></h6>
+                    <h6>expiração <strong><?php echo e($infoCertificado['expiracao']); ?></strong></h6>
+                    <h6>ID <strong><?php echo e($infoCertificado['id']); ?></strong></h6>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php echo Form::open()->fill($item)
+        ->put()
+        ->route('empresas.update', [$item->id])
+        ->multipart(); ?>
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('empresas._forms', ['edit' => true], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Editar Empresa'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/empresas/edit.blade.php ENDPATH**/ ?>

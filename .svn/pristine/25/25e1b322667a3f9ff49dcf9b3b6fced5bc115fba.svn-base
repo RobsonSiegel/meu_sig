@@ -1,0 +1,46 @@
+<?php if($item != null): ?>
+<div class="row">
+    <h4 class="text-success">Caixa Aberto!</h4>
+    <?php if($item->contaEmpresa): ?>
+    <h5 class="text-primary">Conta: <strong><?php echo e($item->contaEmpresa->nome); ?></strong></h5>
+    <?php endif; ?>
+</div>
+<?php else: ?>
+<div class="row g-2">
+    <div class="col-md-2">
+        <?php echo Form::text('valor_abertura', 'Valor de abertura')->attrs(['class' => 'moeda'])->required(); ?>
+
+    </div>
+
+    <?php if(__countLocalAtivo() > 1): ?>
+    <div class="col-md-2">
+        <label for="">Local</label>
+
+        <select id="inp-local_id" required class="select2 class-required" data-toggle="select2" name="local_id">
+            <option value="">Selecione</option>
+            <?php $__currentLoopData = __getLocaisAtivoUsuario(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $local): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option <?php if(isset($item)): ?> <?php if($item->local_id == $local->id): ?> selected <?php endif; ?> <?php endif; ?> value="<?php echo e($local->id); ?>"><?php echo e($local->descricao); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </select>
+    </div>
+    <?php else: ?>
+    <input id="inp-local_id" type="hidden" value="<?php echo e(__getLocalAtivo() ? __getLocalAtivo()->id : ''); ?>" name="local_id">
+    <?php endif; ?>
+
+    <div class="col-md-3 div-conta-empresa">
+        <?php echo Form::select('conta_empresa_id', 'Conta empresa')
+        ->required(); ?>
+
+    </div>
+
+    <div class="col-md-6">
+        <?php echo Form::text('observacao', 'Observação')->attrs(['class' => '']); ?>
+
+    </div>
+    <hr class="mt-4">
+    <div class="col-12" style="text-align: right;">
+        <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+    </div>
+</div>
+<?php endif; ?>
+<?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/caixa/_forms.blade.php ENDPATH**/ ?>

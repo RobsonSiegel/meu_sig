@@ -1,0 +1,13 @@
+<?php $__currentLoopData = $horarios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<tr>
+	<td><?php echo e($i['funcionario_nome']); ?></td>
+	<td><?php echo e($i['inicio']); ?> - <?php echo e($i['fim']); ?></td>
+	<td><?php echo e(__moeda($i['total'])); ?></td>
+	<td>
+		<button onclick="escolheHorario('<?php echo e(json_encode($i)); ?>')" type="button" class="btn btn-sm btn-dark">
+			<i class="ri-check-line"></i>
+			escolher
+		</button>
+	</td>
+</tr>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/agendamento/partials/agenda_row.blade.php ENDPATH**/ ?>

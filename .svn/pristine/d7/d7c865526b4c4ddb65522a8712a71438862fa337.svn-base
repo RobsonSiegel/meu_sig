@@ -1,0 +1,69 @@
+<div class="row g-2">
+    <div class="col-md-4">
+        <?php echo Form::text('descricao', 'Descrição')->required(); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::select('status', 'Ativo', ['1' => 'Sim', '0' => 'Não'])
+        ->attrs(['class' => 'form-select']); ?>
+
+    </div>
+
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-dynamic">
+                <thead class="table-dark">
+                    <tr>
+                        <th></th>
+                        <th>Nome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if(isset($item)): ?>
+                    <?php $__currentLoopData = $item->itens; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $l): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr class="dynamic-form">
+                        <td width="30">
+                            <br>
+                            <button class="btn btn-danger btn-remove-tr btn-sm">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <?php echo Form::text('nome[]', '')->required()
+                            ->value($l->nome); ?>
+
+                        </td>
+                    </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
+                    <tr class="dynamic-form">
+                        <td width="30">
+                            <br>
+                            <button class="btn btn-danger btn-remove-tr btn-sm">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <?php echo Form::text('nome[]', '')->required(); ?>
+
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="row col-12 col-lg-2 mt-3">
+            <br>
+            <button type="button" class="btn btn-dark btn-add-tr px-2">
+                <i class="ri-add-fill"></i>
+                Adicionar linha
+            </button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="col-12" style="text-align: right;">
+        <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+    </div>
+</div>
+<?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/variacao_modelo/_forms.blade.php ENDPATH**/ ?>

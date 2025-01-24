@@ -1,0 +1,1776 @@
+<!doctype html>
+    <html lang="pt-br">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+
+        <title><?php echo e($title); ?></title>
+
+        <link rel="shortcut icon" href="/logo-sm.png">
+        <link href="/assets/vendor/fullcalendar/main.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/vendor/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/vendor/daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css">
+        <link href="/assets/vendor/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css" />
+
+        <script rel="stylesheet" src="/assets/js/config.js"></script>
+        <link href="/assets/css/app.css" rel="stylesheet" type="text/css" id="app-style" />
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/toastr.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+        <link href="/bs5-tour/css/bs5-intro-tour.css" rel="stylesheet"/>
+
+        <link rel='stylesheet' href='/css/bootstrap-duallistbox.min.css'/>
+
+        <?php echo $__env->yieldContent('css'); ?>
+
+    </head>
+    <body>
+
+        <div class="loader"></div>
+        <?php if(isset(Auth::user()->empresa->empresa)): ?>
+        <input type="hidden" value="<?php echo e(Auth::user()->empresa->empresa->id); ?>" id="empresa_id">
+        <?php endif; ?>
+        <input type="hidden" value="<?php echo e(Auth::user()->id); ?>" id="usuario_id">
+
+        <div class="wrapper">
+            <!-- ========== Topbar Start ========== -->
+            <div class="navbar-custom">
+                <div class="topbar container-fluid">
+                    <div class="d-flex align-items-center gap-lg-2 gap-1" id="step1">
+
+                        <!-- Topbar Brand Logo -->
+                        <div class="logo-topbar">
+                            <!-- Logo light -->
+                            <a href="/" class="logo-light">
+                                <span class="logo-lg">
+                                    <img src="/logo-sm.png" alt="logo">
+
+                                </span>
+                                <span class="logo-sm">
+                                    <img src="/logo-sm.png" alt="small logo">
+                                </span>
+                            </a>
+
+                            <!-- Logo Dark -->
+                            <a href="/" class="logo-dark">
+                                <span class="logo-lg">
+                                    <img src="/logo-sm.png" alt="dark logo">
+                                </span>
+                                <span class="logo-sm">
+                                    <img src="/logo-sm.png" alt="small logo">
+                                </span>
+                            </a>
+                        </div>
+
+                        <!-- Sidebar Menu Toggle Button -->
+                        <button class="button-toggle-menu">
+                            <i class="ri-menu-2-fill"></i>
+                        </button>
+
+                        <!-- Horizontal Menu Toggle Button -->
+                        <button class="navbar-toggle" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                            <div class="lines">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </button>
+
+                        <!-- Topbar Search Form -->
+                        <?php if(Auth::user()->empresa && !__isContador()): ?>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <span class="badge bg-primary">AMBIENTE: <?php echo e(Auth::user()->empresa->empresa->ambiente == 2 ? 'HOMOLOGAÇÃO' : 'PRODUÇÃO'); ?></span>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if(sizeof(Auth::user()->acessos) > 0): ?>
+                        <div class="app-search dropdown d-none d-lg-block float-end">
+                            <span class="badge bg-info">IP: <?php echo e(Auth::user()->acessos ? Auth::user()->acessos->first()->ip : ''); ?></span>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if(Auth::user()->empresa && Auth::user()->empresa->empresa->empresa_selecionada != null): ?>
+                        <div class="app-search dropdown d-none d-lg-block float-end">
+                            <a href="<?php echo e(route('contador.show')); ?>" class="badge bg-success p-2">Empresa selecionada: <?php echo e(Auth::user()->empresa->empresa->empresaSelecionada->info); ?></a>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if(Auth::user()->empresa && Auth::user()->empresa->empresa->plano): ?>
+                        <div class="app-search dropdown d-lg-block video" style="margin-left: 20px;">
+                            <span class="badge bg-dark p-2">Plano: 
+                                <strong class="text-success"><?php echo e(Auth::user()->empresa->empresa->plano->plano->nome); ?></strong> - data de expiração: 
+                                <strong><?php echo e(__data_pt(Auth::user()->empresa->empresa->plano->data_expiracao, 0)); ?></strong>
+                            </span>
+                            <a class="btn btn-light btn-sm" href="<?php echo e(route('upgrade.index')); ?>">Fazer upgrade</a>
+                            <button class="btn btn-info btn-sm ml-1" id="click-tour">Tour do sistema</button>
+
+                        </div>
+                        <?php endif; ?>
+
+                    </div>
+
+
+                    <ul class="topbar-menu d-flex align-items-center gap-3">
+                        <li class="dropdown d-lg-none">
+                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="ri-search-line fs-22"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg p-0">
+
+                            </div>
+                        </li>
+                        <!-- inicio alertas -->
+
+                        <li class="dropdown notification-list">
+                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="ri-notification-3-fill fs-22"></i>
+                                <div class="spinner-border spinner-border-sm text-danger" role="status">
+                                    <span class="visually-hidden"></span>
+                                </div>
+                                <span class="noti-icon-badge d-none"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg py-0" style="">
+                                <div class="p-2 border-top-0 border-start-0 border-end-0 border-dashed border">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h6 class="m-0 fs-16 fw-medium"> Notificações</h6>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="<?php echo e(route('notificacao.clear-all')); ?>" class="text-dark text-decoration-underline">
+                                                <small>Limpar tudo</small>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="max-height: 300px;" data-simplebar="init"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content alertas-main" style="padding: 0px;">
+
+
+                                </div></div></div></div><div class="simplebar-placeholder" style="width: auto; height: 432px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 208px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
+
+
+                            </div>
+                        </li>
+
+                        <?php if(!__isContador()): ?>
+                        <?php if(__isActivePlan(Auth::user()->empresa, 'PDV')): ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('pdv_create')): ?>
+                        <li class="d-none d-sm-inline-block">
+                            <a title="PDV" class="nav-link" href="<?php echo e(route('frontbox.create')); ?>">
+                                <i class="ri-shopping-basket-2-fill fs-22"></i>
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                        <?php endif; ?>
+
+                        <li class="d-none d-sm-inline-block" id="step2">
+                            <div class="nav-link" id="light-dark-mode">
+                                <i class="ri-moon-fill fs-22"></i>
+                            </div>
+                        </li>
+
+                        <li class="d-none d-md-inline-block">
+                            <a class="nav-link" href="" data-toggle="fullscreen">
+                                <i class="ri-fullscreen-line fs-22"></i>
+                            </a>
+                        </li>
+
+                        <li class="dropdown me-md-2" id="step3">
+                            <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <span class="account-user-avatar">
+                                    <?php if(Auth::user()->imagem != null): ?>
+                                    <img src="<?php echo e(Auth::user()->img); ?>" height="32" class="rounded-circle">
+                                    <?php else: ?>
+                                    <img src="/assets/images/users/avatar-1.jpg" alt="user-image" width="32" class="rounded-circle">
+                                    <?php endif; ?>
+                                </span>
+                                <span class="d-lg-flex flex-column gap-1 d-none">
+                                    <h5 class="my-0"> <?php echo e(Auth::user()->name); ?></h5>
+                                    <h6 class="my-0 fw-normal"><?php echo e(Auth::user()->tipo); ?></h6>
+
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
+                                <!-- item-->
+                                <div class=" dropdown-header noti-title">
+                                    <h6 class="text-overflow m-0">Bem vindo!</h6>
+                                </div>
+
+                                <?php if(!__isContador()): ?>
+                                <a href="<?php echo e(route('usuarios.profile', Auth::user()->id)); ?>" class="dropdown-item">
+                                    <i class="ri-account-circle-fill align-middle me-1"></i>
+                                    <span>Minha Conta</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="<?php echo e(route('config.index')); ?>" class="dropdown-item">
+                                    <i class="ri-settings-4-fill align-middle me-1"></i>
+                                    <span>Configuração</span>
+                                </a>
+
+                                <a href="<?php echo e(route('ticket.index')); ?>" class="dropdown-item">
+                                    <i class="ri-information-fill align-middle me-1"></i>
+                                    <span>Abrir chamado</span>
+                                </a>
+                                <?php endif; ?>
+
+                                <!-- item-->
+                                <a class="dropdown-item" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                    <i class="ri-logout-box-line  align-middle me-1"></i>
+                                    Sair
+                                </a>
+                                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" class="d-none">
+                                    <?php echo csrf_field(); ?>
+                                </form>
+                            </div>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- ========== Topbar End ========== -->
+
+
+    <div class="leftside-menu">
+
+        <!-- Brand Logo Light -->
+        <a href="/" class="logo logo-light">
+            <span class="logo-lg">
+                <img class="logo-painel" src="/logo.png" alt="logo">
+            </span>
+            <span class="logo-sm">
+                <img src="/logo-sm.png" alt="small logo">
+            </span>
+        </a>
+
+        <!-- Brand Logo Dark -->
+        <a href="/" class="logo logo-dark">
+            <span class="logo-lg">
+                <img class="logo-painel" src="/logo.png" alt="dark logo">
+            </span>
+            <span class="logo-sm">
+                <img src="/logo-sm.png" alt="small logo">
+            </span>
+        </a>
+
+        <!-- Sidebar Hover Menu Toggle Button -->
+        <div class="button-sm-hover" data-bs-toggle="tooltip" data-bs-placement="right" title="Show Full Sidebar">
+            <i class="ri-checkbox-blank-circle-line align-middle"></i>
+        </div>
+
+        <!-- Full Sidebar Menu Close Button -->
+        <div class="button-close-fullsidebar">
+            <i class="ri-close-fill align-middle"></i>
+        </div>
+
+        <!-- Sidebar -left -->
+        <div class="h-100" id="leftside-menu-container" data-simplebar>
+            <!-- Leftbar User -->
+            <div class="leftbar-user p-3 text-white">
+                <a href="<?php echo e(route('usuarios.profile', Auth::user()->id)); ?>" class="d-flex align-items-center text-reset">
+                    <div class="flex-shrink-0">
+                        <?php if(Auth::user()->imagem != null): ?>
+                        <img src="<?php echo e(Auth::user()->img); ?>" height="42" class="rounded-circle shadow">
+                        <?php else: ?>
+                        <img src="/assets/images/users/avatar-1.jpg" height="42" class="rounded-circle shadow">
+                        <?php endif; ?>
+                    </div>
+                    <div class="flex-grow-1 ms-2">
+                        <span class="fw-semibold fs-15 d-block"> <?php echo e(Auth::user()->name); ?></span>
+                        <span class="fs-13"><?php echo e(Auth::user()->tipo); ?></span>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="ri-arrow-right-s-fill fs-20"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!--- Sidemenu -->
+            <ul class="side-nav" id="step4">
+
+                <li class="side-nav-title mt-1"> Menu</li>
+
+                <li class="side-nav-item">
+                    <a href="<?php echo e(route('home')); ?>" class="side-nav-link">
+                        <i class="ri-dashboard-2-fill"></i>
+                        <span class="badge bg-success float-end"></span>
+                        <span> Home </span>
+                    </a>
+                </li>
+
+                <?php if(__isMaster()): ?>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarPages2" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-stack-fill"></i>
+                        <span> SuperAdmin </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPages2">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('empresas.index')); ?>">Empresas</a>
+                            </li>
+
+                            <?php if(env("CONTADOR") == 1): ?>
+                            <li>
+                                <a href="<?php echo e(route('contadores.index')); ?>">Contadores</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('planos.index')); ?>">Planos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('segmentos.index')); ?>">Segmentos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('cidades.index')); ?>">Cidades</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('usuario-super.index')); ?>">Usuários</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('gerenciar-planos.index')); ?>">Gerenciar planos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('financeiro-plano.index')); ?>">Financeiro planos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('planos-pendentes.index')); ?>">Planos pendentes</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('ncm.index')); ?>">NCM</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('ibpt.index')); ?>">IBPT</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('ticket-super.index')); ?>">Ticket</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('configuracao-super.index')); ?>">Configuração</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('notificacao-super.index')); ?>">Notificações</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('padroes-etiqueta.index')); ?>">Padrões para etiqueta</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('video-suporte.index')); ?>">Videos de suporte</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarPermissao" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-rotate-lock-line"></i>
+                        <span> Controle de acesso </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPermissao">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('permissions.index')); ?>">Permissões</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('roles.index')); ?>">Atribuições</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarPages1" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-file-mark-fill"></i>
+                        <span> Emissões </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPages1">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('nfe-all')); ?>">NFe</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('nfce-all')); ?>">NFCe</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <?php if(env("MARKETPLACE") == 1): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMarketPlace" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-store-2-line"></i>
+                        <span>Delivery </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMarketPlace">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('bairros-super.index')); ?>">Bairros</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+
+                <?php endif; ?>
+
+                <?php if(!__isMaster()): ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Produtos')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['produtos_view'])): ?>
+                <li class="side-nav-item" id="step7">
+                    <a data-bs-toggle="collapse" href="#sidebarExtendedProd" aria-expanded="false" aria-controls="sidebarExtendedUI" class="side-nav-link">
+                        <i class="ri-product-hunt-fill"></i>
+                        <span> Produtos </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarExtendedProd">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('categoria_produtos_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('categoria-produtos.index')); ?>">Categorias</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('produtos_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('produtos.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('produtos_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('produtos.create')); ?>">Novo Produto</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('estoque_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('estoque.index')); ?>">Estoque</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('variacao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('variacoes.index')); ?>">Variações</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('lista_preco_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('lista-preco.index')); ?>">Lista de preços</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if(__isPlanoFiscal()): ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('config_produto_fiscal_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('produtopadrao-tributacao.index')); ?>">Configuração Padrão Fiscal</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('marcas_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('marcas.index')); ?>">Marcas</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('modelo-etiquetas.index')); ?>">Modelos de Etiqueta</a>
+                            </li>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('transferencia_estoque_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('transferencia-estoque.index')); ?>">Transferência de estoque</a>
+                            </li>
+                            <?php endif; ?>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Atendimento')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['atendimentos_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarAtendimento" aria-expanded="false" aria-controls="sidebarAtendimento" class="side-nav-link">
+                        <i class="ri-store-2-line"></i>
+                        <span> Atendimento </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarAtendimento">
+                        <ul class="side-nav-third-level">
+                            <li>
+                                <a href="<?php echo e(route('atendimentos.index')); ?>">Dias de Atendimento</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('interrupcoes.index')); ?>">Interrupções</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('funcionamentos.index')); ?>">Horário de Funcionamento</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Serviços')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['servico_view', 'categoria_servico_view', 'ordem_servico_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarExtendedServ" aria-expanded="false" aria-controls="sidebarExtendedSer" class="side-nav-link">
+                        <i class="ri-tools-fill"></i>
+                        <span> Serviços </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarExtendedServ">
+                        <ul class="side-nav-second-level">
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('categoria_servico_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('categoria-servico.index')); ?>">Categorias</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('servico_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('servicos.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('servico_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('servicos.create')); ?>">Novo serviço</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ordem_servico_view')): ?>
+                            <li>
+                                <a data-bs-toggle="collapse" href="#ordemservico" aria-expanded="false" aria-controls="ordemservico">
+                                    <span> Ordem Serviço</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="ordemservico">
+                                    <ul class="side-nav-third-level">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ordem_servico_view')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('ordem-servico.index')); ?>">Listar</a>
+                                        </li>
+                                        <?php endif; ?>
+
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ordem_servico_create')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('ordem-servico.create')); ?>">Nova OS</a>
+                                        </li>
+                                        <?php endif; ?>
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Agendamentos')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['agendamento_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarAgendamentos" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-calendar-event-fill"></i>
+
+                        <span>Agendamentos</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarAgendamentos">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="<?php echo e(route('agendamentos.index')); ?>">Listar</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Usuários')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['usuarios_view', 'controle_acesso_view'])): ?>
+                <li class="side-nav-item" id="step6">
+                    <a data-bs-toggle="collapse" href="#sidebarUsuarios" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-user-fill"></i>
+
+                        <span>Usuários</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarUsuarios">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('usuarios_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('usuarios.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('controle_acesso_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('controle-acesso.index')); ?>">Controle de acesso</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Pessoas')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['clientes_view', 'fornecedores_view', 'transportadoras_view'])): ?>
+                <li class="side-nav-item" id="step6">
+                    <a data-bs-toggle="collapse" href="#sidebarPessoas" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-group-2-fill"></i>
+
+                        <span>Pessoas</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPessoas">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('clientes_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('clientes.index')); ?>">Clientes</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('fornecedores_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('fornecedores.index')); ?>">Fornecedores</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('transportadoras_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('transportadoras.index')); ?>">Transportadoras</a>
+                            </li>
+                            <?php endif; ?>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['funcionario_view', 'apuracao_mensal_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarGestaoPessoal" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-folder-user-line"></i>
+
+                        <span>Gestão Pessoal</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarGestaoPessoal">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('funcionario_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('funcionarios.index')); ?>">Funcionários</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('apuracao_mensal_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('evento-funcionarios.index')); ?>">Eventos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('funcionario-eventos.index')); ?>">Funcionários x Eventos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('apuracao-mensal.index')); ?>">Apuração Mensal</a>
+                            </li>
+                            <?php endif; ?>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Compras')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['compras_view', 'manifesto_view', 'cotacao_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarCompra" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-logout-box-line"></i>
+
+                        <span>Compras</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarCompra">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('compras_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('compras.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('compras_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('compras.create')); ?>" data-toggle="fullscreen" class="dropdown-item">Nova
+                                </a>
+                            </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('compras.xml')); ?>" data-toggle="fullscreen" class="dropdown-item">
+                                    Importar XML
+                                </a>
+                            </li>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manifesto_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('manifesto.index')); ?>" data-toggle="fullscreen" class="dropdown-item">
+                                    Manifesto
+                                </a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cotacao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cotacoes.index')); ?>" data-toggle="fullscreen" class="dropdown-item">
+                                    Cotação
+                                </a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if(__isPlanoFiscal()): ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('arquivos_xml_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfe-entrada-xml.index')); ?>">Arquivos XML</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isPlanoFiscal()): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['devolucao_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarDevolucao" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-arrow-go-back-fill"></i>
+
+                        <span>Devolução</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarDevolucao">
+                        <ul class="side-nav-second-level">
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('devolucao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('devolucao.index')); ?>" data-toggle="fullscreen" class="dropdown-item">
+                                    Lista
+                                </a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('devolucao_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('devolucao.xml')); ?>" data-toggle="fullscreen" class="dropdown-item">
+                                    Nova devolução
+                                </a>
+                            </li>
+                            <?php endif; ?>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'PDV')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['pdv_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarPDV" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-shopping-cart-fill"></i>
+
+                        <span>PDV</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPDV">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('pdv_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('frontbox.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('pdv_create')): ?>
+                            <li class="d-none d-sm-inline-block">
+                                <a href="<?php echo e(route('frontbox.create')); ?>" data-toggle="fullscreen" class="dropdown-item">PDV</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Financeiro')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['conta_pagar_view', 'conta_receber_view', 'relatorio_view', 'caixa_view', 'contas_empresa_view', 'contas_boleto_view', 'boleto_view', 'taxa_pagamento_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarPagar" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-money-dollar-box-fill"></i>
+                        <span>Financeiro</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPagar">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('caixa_view')): ?>
+                            <li>
+                                <a data-bs-toggle="collapse" href="#caixa" aria-expanded="false" aria-controls="caixa">
+                                    <span> Caixa </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="caixa">
+                                    <ul class="side-nav-third-level">
+                                        <li>
+                                            <a href="<?php echo e(route('caixa.index')); ?>">Movimentação</a>
+                                        </li>
+
+                                        <li>
+                                            <a href="<?php echo e(route('caixa.create')); ?>">Abrir caixa</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo e(route('caixa.list')); ?>">Listar</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['conta_pagar_view', 'conta_pagar_create'])): ?>
+                            <li>
+                                <a data-bs-toggle="collapse" href="#pagar" aria-expanded="false" aria-controls="pagar">
+                                    <span> Contas a pagar </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="pagar">
+                                    <ul class="side-nav-third-level">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('conta_pagar_view')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('conta-pagar.index')); ?>">Listar</a>
+                                        </li>
+                                        <?php endif; ?>
+
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('conta_pagar_create')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('conta-pagar.create')); ?>">Nova conta</a>
+                                        </li>
+                                        <?php endif; ?>
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['conta_receber_view', 'conta_receber_create'])): ?>
+                            <li>
+                                <a data-bs-toggle="collapse" href="#receber" aria-expanded="false" aria-controls="receber">
+                                    <span> Contas a receber </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="receber">
+                                    <ul class="side-nav-third-level">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('conta_receber_view')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('conta-receber.index')); ?>">Listar</a>
+                                        </li>
+                                        <?php endif; ?>
+
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('conta_receber_create')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('conta-receber.create')); ?>">Nova conta</a>
+                                        </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </div>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('relatorio_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('relatorios.index')); ?>">Relatórios</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('taxa_pagamento_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('taxa-cartao.index')); ?>">Taxas de pagamento</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('plano-contas.index')); ?>">Plano de contas</a>
+                            </li>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('contas_empresa_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('contas-empresa.index')); ?>">Contas da empresa</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('contas_boleto_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('contas-boleto.index')); ?>">Contas para boleto</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('boleto_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('boleto.index')); ?>">Boletos</a>
+                            </li>
+                            <?php endif; ?>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Vendas')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['nfe_view', 'orcamento_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarNfe" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-file-list-fill"></i>
+
+                        <span>Vendas</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarNfe">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfe_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfe.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfe_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfe.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if(__isPlanoFiscal()): ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfe_inutiliza')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfe.inutilizar')); ?>">Inutilizar NFe</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('orcamento_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('orcamentos.index')); ?>">Orçamentos</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if(__isPlanoFiscal()): ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('arquivos_xml_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfe-xml.index')); ?>">Arquivos XML</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('nfe.import-zip')); ?>">Importar XML</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'NFCe')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['nfce_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarNfce" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-bill-line"></i>
+                        <span>NFCe</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarNfce">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfce_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfce.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfce_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfce.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if(__isPlanoFiscal()): ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfce_inutiliza')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfce.inutilizar')); ?>">Inutilizar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('arquivos_xml_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nfce-xml.index')); ?>">Arquivos XML</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('nfce.import-zip')); ?>">Importar XML</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Pré venda')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['pre_venda_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarPreVenda" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class=" ri-list-ordered"></i>
+                        <span>Pré Venda</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarPreVenda">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('pre_venda_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('pre-venda.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('pre_venda_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('pre-venda.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'NFSe')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['nfse_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarNfse" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-file-code-line"></i>
+
+                        <span>NFSe</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarNfse">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfse_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nota-servico.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nfse_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('nota-servico.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <a href="<?php echo e(route('nota-servico-config.index')); ?>">Emitente</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Veiculos')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['veiculos_view', 'veiculos_create'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarVeiculos" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-roadster-line"></i>
+                        <span> Veículos </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarVeiculos">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('veiculos_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('veiculos.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('veiculos_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('veiculos.create')); ?>">Novo Veículo</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'CTe')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['cte_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarCte" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-truck-fill"></i>
+                        <span>CTe</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarCte">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cte_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cte.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cte_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cte.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('arquivos_xml_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cte-xml.index')); ?>">Arquivos XML</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['cte_os_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarCteOs" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-focus-3-line"></i>
+                        <span>CTe Os</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarCteOs">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cte_os_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cte-os.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cte_os_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cte-os.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+                            
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'MDFe')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['mdfe_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMdfe" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-file-lock-line"></i>
+                        <span>MDFe</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMdfe">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('mdfe_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('mdfe.index')); ?>">Listar</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('mdfe_create')): ?>
+                            <li>
+                                <a href="<?php echo e(route('mdfe.create')); ?>">Nova</a>
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('arquivos_xml_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('mdfe-xml.index')); ?>">Arquivos XML</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Cardapio')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cardapio_view')): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarCardapio" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-restaurant-2-line"></i>
+                        <span>Cardápio</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarCardapio">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="<?php echo e(route('config-cardapio.index')); ?>">Configuração</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('produtos-cardapio.categorias')); ?>">Categorias</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('produtos-cardapio.index')); ?>">Produtos</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('adicionais.index')); ?>">Adicionais</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('pedidos-cardapio.index')); ?>">Comandas</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('pedido-cozinha.index')); ?>">Controle de pedidos</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('carrossel.index')); ?>">Carrossel destaque</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('avaliacao-cardapio.index')); ?>">Avaliações</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('tamanhos-pizza.index')); ?>">Tamanhos de pizza</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(env("ECOMMERCE") == 1): ?>
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Ecommerce')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ecommerce_view')): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-store-3-line"></i>
+                        <span> Ecommerce </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarEcommerce">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="<?php echo e(route('config-ecommerce.index')); ?>">Configuração</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('produtos-ecommerce.categorias')); ?>">Categorias de produtos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('produtos-ecommerce.index')); ?>">Produtos</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('pedidos-ecommerce.index')); ?>">Pedidos</a>
+                            </li>
+
+                            <li>
+                                <a target="_blank" href="<?php echo e(route('config-ecommerce.site')); ?>">Ver site</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(env("MERCADOLIVRE") == 1): ?>
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Mercado Livre')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('mercado_livre_view')): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMercadoLivre" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-box-1-line"></i>
+                        <span> Mercado Livre </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMercadoLivre">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('mercado-livre-config.index')); ?>">Configuração</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('mercado-livre.produtos-news')); ?>">Produtos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('mercado-livre-perguntas.index')); ?>">Perguntas</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('mercado-livre-pedidos.index')); ?>">Pedidos</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(env("NUVEMSHOP") == 1): ?>
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Nuvem Shop')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('nuvem_shop_view')): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarNuvemShop" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-cloud-line"></i>
+                        <span> Nuvem Shop </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarNuvemShop">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('nuvem-shop-config.index')); ?>">Configuração</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('nuvem-shop-categorias.index')); ?>">Categorias</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('nuvem-shop-produtos.index')); ?>">Produtos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('nuvem-shop-pedidos.index')); ?>">Pedidos</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if(env("MARKETPLACE") == 1): ?>
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Delivery')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delivery_view')): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMarketPlace" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-store-2-line"></i>
+                        <span> Delivery/Marketplace </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMarketPlace">
+                        <ul class="side-nav-second-level">
+
+                            <li>
+                                <a href="<?php echo e(route('config-marketplace.index')); ?>">Configuração</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('pedidos-delivery.index')); ?>">Pedidos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('produtos-delivery.categorias')); ?>">Categorias de produtos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('servico-marketplace.categorias')); ?>">Categorias de serviços</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('produtos-delivery.index')); ?>">Produtos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('servicos-marketplace.index')); ?>">Serviços</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('funcionamento-delivery.index')); ?>">Funcionamento</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('bairros-empresa.index')); ?>">Bairros</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('adicionais.index')); ?>">Adicionais</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('destaque-marketplace.index')); ?>">Destaques</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('cupom-desconto.index')); ?>">Cupom de desconto</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('tamanhos-pizza.index')); ?>">Tamanhos de pizza</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('motoboys.index')); ?>">Motoboys</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('pedido-cozinha.index')); ?>">Controle de pedidos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('clientes-delivery.index')); ?>">Clientes</a>
+                            </li>
+                            <li>
+                                <a target="_blank" href="<?php echo e(route('config-marketplace.loja')); ?>">Ver loja</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['natureza_operacao_view', 'emitente_view'])): ?>
+                <li class="side-nav-item" id="step5">
+                    <a data-bs-toggle="collapse" href="#sidebarConfig" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-settings-4-fill"></i>
+                        <span>Configuração</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarConfig">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('emitente_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('config.index')); ?>">Emitente</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('localizacao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('localizacao.index')); ?>">Localizações</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('natureza_operacao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('natureza-operacao.index')); ?>">Natureza de Operação</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('emitente_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('config-geral.create')); ?>">Geral</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('difal_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('difal.index')); ?>">Op. Interestadual - Difal</a>
+                            </li>
+                            <?php endif; ?>
+
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cashback_config_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('cash-back-config.index')); ?>">CashBack</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+
+                <?php if(env("RESERVAS") == 1): ?>
+                <?php if(__isActivePlan(Auth::user()->empresa, 'Reservas')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['categoria_acomodacao_view', 'config_reserva_view', 'reserva_view'])): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarReservas" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <i class="ri-hotel-line"></i>
+                        <span> Reservas </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarReservas">
+                        <ul class="side-nav-second-level">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('config_reserva_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('config-reserva.index')); ?>">Configuração</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('categoria_acomodacao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('categoria-acomodacao.index')); ?>">Categorias de acomodação</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('acomodacao_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('acomodacao.index')); ?>">Acomodações</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('frigobar_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('frigobar.index')); ?>">Frigobares</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('reserva_view')): ?>
+                            <li>
+                                <a href="<?php echo e(route('reservas.index')); ?>">Reservas</a>
+                            </li>
+                            <?php endif; ?>
+                            <li>
+                                <a href="<?php echo e(route('produtos-reserva.index')); ?>">Produtos</a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php endif; ?>
+
+                <?php if(Auth::user()->empresa && __isContador()): ?>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarCad" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-draft-fill"></i>
+                        <span>Cadastros</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarCad">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.produtos')); ?>">Produtos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.clientes')); ?>">Clientes</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.fornecedores')); ?>">Fornecedores</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarDoc" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <i class="ri-clipboard-fill"></i>
+                        <span>Documentos</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarDoc">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.nfe')); ?>">NFe</a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.nfce')); ?>">NFCe</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.cte')); ?>">CTe</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('contador-empresa.mdfe')); ?>">MDFe</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+    <div class="content-page">
+        <div class="content">
+            <div class="container-fluid">
+                <!-- <button class="btn btn-dark">
+                    <i class="ri-movie-fill"></i> Suporte
+                </button> -->
+                <?php echo $__env->yieldContent('content'); ?>
+
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <script>
+                            document.write(new Date().getFullYear())
+
+                        </script> <?php echo e(env("APP_NAME")); ?>
+
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <?php if(!isset($not_loading)): ?>
+    <div class="control-loading">
+        <div class="modal-loading loading-class"></div>
+    </div>
+    <?php endif; ?>
+
+    <div class="modal fade" id="modal-notificacao" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Notificações</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-notificacao-delivery" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Notificações de Delivery</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-notificacao-ecommerce" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Notificações de Ecommerce</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        let prot = window.location.protocol;
+        let host = window.location.host;
+        const path_url = prot + "//" + host + "/";
+
+    </script>
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/vendor/select2/js/select2.min.js"></script>
+    <script src="/assets/js/toastr.min.js"></script>
+    <script src="/assets/vendor/dropzone/dropzone.js"></script>
+    <script src="/assets/js/pages/component.fileupload.js"></script>
+    <script src="/assets/vendor/daterangepicker/moment.min.js"></script>
+    <script src="/assets/vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="/assets/vendor/jquery-mask-plugin/jquery.mask.min.js"></script>
+    <script src="/assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/assets/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+
+    <script src='/js/jquery.bootstrap-duallistbox.min.js'></script>
+
+    <script src="/js/uploadImagem.js"></script>
+    <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js'></script>
+    <script src="/assets/js/app.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
+    <script src="/assets/vendor/flatpickr/flatpickr.min.js"></script>
+    <script src="/assets/js/pages/demo.flatpickr.js"></script>
+
+    <?php if(__isNotificacao(Auth::user()->empresa) && Auth::user()->notificacao_cardapio): ?>
+    <script src="/js/notificacao.js"></script>
+    <?php endif; ?>
+
+    <?php if(__isNotificacaoMarketPlace(Auth::user()->empresa) && Auth::user()->notificacao_marketplace): ?>
+    <script src="/js/notificacao_marketplace.js"></script>
+    <?php endif; ?>
+
+    <?php if(__isNotificacaoEcommerce(Auth::user()->empresa) && Auth::user()->notificacao_ecommerce): ?>
+    <script src="/js/notificacao_ecommerce.js"></script>
+    <?php endif; ?>
+
+    <?php echo $__env->yieldContent('js'); ?>
+
+    <script type="text/javascript">
+        toastr.options = {
+            "progressBar": true
+            , "onclick": null
+            , "showDuration": "300"
+            , "hideDuration": "1000"
+            , "timeOut": "10000"
+            , "extendedTimeOut": "1000"
+            , "showEasing": "swing"
+            , "hideEasing": "linear"
+            , "showMethod": "fadeIn"
+            , "hideMethod": "fadeOut"
+        }
+        <?php if(session()->has('flash_success')): ?>
+        toastr.success('<?php echo e(session()->get('flash_success')); ?>');
+        <?php endif; ?>
+
+        <?php if(session()->has('flash_error')): ?>
+        toastr.error('<?php echo e(session()->get('flash_error')); ?>');
+        <?php endif; ?>
+
+        <?php if(session()->has('flash_warning')): ?>
+        toastr.warning('<?php echo e(session()->get('flash_warning')); ?>');
+        <?php endif; ?>
+
+        <?php if(!Auth::user()->sidebar_active): ?>
+
+        $(html).attr('data-sidenav-size', 'condensed')
+        <?php endif; ?>
+
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                document.querySelector(".loader").classList.add("loader--hidden")                
+            }, 100)
+        })
+
+        function audioError(){
+            var audio = new Audio('/audio/error.mp3');
+            audio.addEventListener('canplaythrough', function() {
+                audio.play();
+            });
+        }
+
+    </script>
+
+    <script src="/bs5-tour/js/bs5-intro-tour.js"></script>
+    <script src="/js/tour.js"></script>
+</body>
+</html>
+<?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/layouts/app.blade.php ENDPATH**/ ?>

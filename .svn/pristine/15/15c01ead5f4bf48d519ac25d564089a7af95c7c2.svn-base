@@ -1,0 +1,87 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="card mt-1">
+    <div class="card-header">
+        <?php if(isset($isCompra)): ?>
+        <h4>Nova Compra</h4>
+        <?php else: ?>
+        <?php if(isset($isOrcamento) && $isOrcamento == 1): ?>
+        <h4>Novo Orçamento</h4>
+        <?php else: ?>
+        <h4>Nova Venda - NFe</h4>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if(isset($isReserva)): ?>
+        <p>Consumo da reserva <strong>#<?php echo e($item->numero_sequencial); ?></strong></p>
+        <?php endif; ?>
+
+        <?php if(isset($orcamentosId)): ?>
+        <p class="text-primary">Gerando venda de orçamentos</p>
+        <?php endif; ?>
+
+        <?php if(isset($isOrcamento)): ?>
+        <input type="hidden" id="is_orcamento" value="1">
+        <?php else: ?>
+        <input type="hidden" id="is_orcamento" value="0">
+        <?php endif; ?>
+
+        <div style="text-align: right; margin-top: -35px;">
+            <?php if(__countLocalAtivo() > 1 && isset($caixa) && !__escolheLocalidade()): ?>
+            <h5 class="mt-2">Local: <strong class="text-danger"><?php echo e($caixa->localizacao ? $caixa->localizacao->descricao : ''); ?></strong></h5>
+            <?php endif; ?>
+            <?php if(isset($isOrcamento)): ?>
+            <a href="<?php echo e(route('orcamentos.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+            <?php else: ?>
+            <a href="<?php echo e(!isset($isCompra) ? route('nfe.index') : route('compras.index')); ?>" class="btn btn-danger btn-sm px-3">
+                <i class="ri-arrow-left-double-fill"></i>Voltar
+            </a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <?php echo Form::open()
+        ->post()
+        ->id('form-nfe')
+        ->route('nfe.store'); ?>
+
+
+        <div class="pl-lg-4">
+            <?php echo $__env->make('nfe._forms', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
+        <?php echo Form::close(); ?>
+
+    </div>
+</div>
+<?php if(isset($isCompra)): ?>
+<?php echo $__env->make('modals._novo_fornecedor', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php else: ?>
+<?php echo $__env->make('modals._novo_cliente', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php endif; ?>
+
+<?php echo $__env->make('modals._dimensao_item_nfe', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+<?php $__env->startSection('js'); ?>
+
+<script type="text/javascript"> 
+    $(".tipo_pagamento").change(() => {
+        let tipo = $(".tipo_pagamento").val();
+        if (tipo == "03" || tipo == "04") {
+            $('#cartao_credito').modal('show')
+        }
+    })
+</script>
+
+<script src="/js/nfe.js"></script>
+<?php if(isset($isCompra)): ?>
+<script src="/js/novo_fornecedor.js"></script>
+<?php else: ?>
+<script src="/js/novo_cliente.js"></script>
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => isset($isCompra) ? 'Nova Compra' : (isset($isOrcamento) && $isOrcamento == 1 ? 'Novo orçamento' : 'Nova Venda')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/nfe/create.blade.php ENDPATH**/ ?>

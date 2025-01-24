@@ -1,0 +1,159 @@
+<div class="row g-2">
+    <div class="col-md-4">
+        <?php echo Form::text('nome', 'Nome')->attrs(['class' => ''])->required(); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::tel('valor', 'Valor')->attrs(['class' => 'moeda'])->required()
+        ->value(isset($item) ? __moeda($item->valor) : ''); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::tel('tempo_servico', 'Tempo de execução (minutos)')->attrs(['data-mask' => '00'])->required(); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::tel('comissao', 'Comissão (opcional)')->attrs(['class' => 'moeda']); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::select('unidade_cobranca', 'Unidade cobrança', ['UND' => 'UND', 'HORAS' => 'HORAS', 'MIN' => 'MIN'])->attrs(['class' => 'form-select']); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::select('categoria_id', 'Categoria', ['' => 'Selecione uma categoria'] + $categorias->pluck('nome', 'id')->all())->attrs(['class' => 'form-select'])->required(); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::text('tempo_adicional', 'Tempo adicional')
+        ->attrs(['data-mask' => '00']); ?>
+
+    </div>
+
+    <div class="col-md-2">
+        <?php echo Form::tel('valor_adicional', 'Valor adicional')->attrs(['class' => 'moeda'])
+        ->value(isset($item) ? __moeda($item->valor_adicional) : ''); ?>
+
+    </div>
+
+    <div class="col-md-2">
+        <?php echo Form::text('tempo_tolerancia', 'Tempo de tolerância')
+        ->attrs(['data-mask' => '00']); ?>
+
+    </div>
+
+    <div class="col-md-2">
+        <?php echo Form::tel('codigo_servico', 'Código do serviço')->attrs(['class' => '']); ?>
+
+    </div>
+
+    <div class="col-md-3">
+        <?php echo Form::tel('codigo_tributacao_municipio', 'Código do tributação municipal')->attrs(['class' => '']); ?>
+
+    </div>
+
+    <div class="col-md-2">
+        <?php echo Form::select('status', 'Ativo', ['1' => 'Sim', '0' => 'Não'])
+        ->attrs(['class' => 'form-select']); ?>
+
+    </div>
+
+    <?php if(__isActivePlan(Auth::user()->empresa, 'Reservas')): ?>
+    <div class="col-md-2">
+        <?php echo Form::select('reserva', 'Usar em reserva', ['0' => 'Não', '1' => 'Sim'])
+        ->attrs(['class' => 'form-select']); ?>
+
+    </div>
+    <div class="col-md-2">
+        <?php echo Form::select('padrao_reserva_nfse', 'Padrão reserva NFSe', ['0' => 'Não', '1' => 'Sim'])
+        ->attrs(['class' => 'form-select tooltipp']); ?>
+
+        <div class="text-tooltip d-none">
+            Marcar como sim se for usar este serviço como padrão na emissão da NFSe de reserva
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if(__isActivePlan(Auth::user()->empresa, 'Delivery')): ?>
+    <div class="col-md-2">
+        <?php echo Form::select('marketplace', 'Usar em marketplace', ['0' => 'Não', '1' => 'Sim'])
+        ->attrs(['class' => 'form-select'])
+        ->value(isset($item) ? $item->marketplace : (isset($marketplace) && $marketplace == 1 ? 1 : 0)); ?>
+
+    </div>
+
+    <div class="col-md-2">
+        <?php echo Form::select('destaque_marketplace', 'Destaque no marketplace', ['0' => 'Não', '1' => 'Sim'])
+        ->attrs(['class' => 'form-select']); ?>
+
+    </div>
+
+    <?php if(isset($marketplace) && $marketplace == 1): ?>
+    <input type="hidden" name="redirect_marketplace" value="1">
+    <?php endif; ?>
+
+    <?php endif; ?>
+
+    <div class="col-md-12">
+        <?php echo Form::textarea('descricao', 'Descrição')
+        ->attrs(['rows' => '4']); ?>
+
+    </div>
+
+    <div class="card mt-4">
+
+        <div class="card-body row">
+            <h4 class="">Tributação</h4>
+
+            <div class="col-md-2">
+                <?php echo Form::tel('aliquota_iss', '% ISS')->attrs(['class' => 'percentual']); ?>
+
+            </div>
+            <div class="col-md-2">
+                <?php echo Form::tel('aliquota_pis', '% PIS')->attrs(['class' => 'percentual']); ?>
+
+            </div>
+            <div class="col-md-2">
+                <?php echo Form::tel('aliquota_cofins', '% COFINS')->attrs(['class' => 'percentual']); ?>
+
+            </div>
+            <div class="col-md-2">
+                <?php echo Form::tel('aliquota_inss', '% INSS')->attrs(['class' => 'percentual']); ?>
+
+            </div>
+        </div>
+    </div>
+
+    <hr class="">
+    
+    <div class="card col-md-3 form-input">
+        <div class="preview">
+            <button type="button" id="btn-remove-imagem" class="btn btn-link-danger btn-sm btn-danger">x</button>
+            <?php if(isset($item)): ?>
+            <img id="file-ip-1-preview" src="<?php echo e($item->img); ?>">
+            <?php else: ?>
+            <img id="file-ip-1-preview" src="/imgs/no-image.png">
+            <?php endif; ?>
+        </div>
+        <label for="file-ip-1">Imagem</label>
+        <input type="file" id="file-ip-1" name="image" accept="image/*" onchange="showPreview(event);">
+    </div>
+    <?php if($errors->has('image')): ?>
+    <div class="text-danger mt-2">
+        <?php echo e($errors->first('image')); ?>
+
+    </div>
+    <?php endif; ?>
+    <hr class="mt-2">
+    
+    <div class="col-12" style="text-align: right;">
+        <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+    </div>
+</div>
+
+<?php $__env->startSection('js'); ?>
+<script type="text/javascript" src="/js/uploadImagem.js">
+
+</script>
+<?php $__env->stopSection(); ?>
+<?php /**PATH /Users/marcos/Documents/laravel_novo/api/resources/views/servicos/_forms.blade.php ENDPATH**/ ?>

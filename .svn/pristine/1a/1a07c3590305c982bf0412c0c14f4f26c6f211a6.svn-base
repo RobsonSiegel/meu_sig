@@ -1,0 +1,27 @@
+<?php $__env->startSection('content'); ?>
+<div class="mt-3">
+	<div class="card card-custom gutter-b example example-compact">
+		<div class="container <?php if(env('ANIMACAO')): ?> animate__animated <?php endif; ?> animate__backInLeft">
+			<div class="col-lg-12">
+				<br>
+				<?php $__currentLoopData = $logMessage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+				<p><?php echo $log; ?></p>
+				<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+			</div>
+
+			<a href="/update-sql" class="btn btn-info mb-4 ml-4">
+				<i class="ri-arrow-left-circle-line"></i>
+				voltar
+			</a>
+		</div>
+	</div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('javascript'); ?>
+<script type="text/javascript">
+	
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', ['title' => 'Update'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\FontesVersaoSLYM\resources\views/update/finish.blade.php ENDPATH**/ ?>

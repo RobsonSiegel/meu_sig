@@ -1,0 +1,175 @@
+<div class="row">
+    <div class="table-reponsive">
+        <input type="hidden" id="confirma-itens" value="<?php echo e(($config != null && $config->confirmar_itens_prevenda == 1) ? 1 : 0); ?>">
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <h5>Cliente: <strong style="color: steelblue"><?php echo e($item->cliente_id ? $item->cliente->razao_social : 'Consumidor Final'); ?></strong></h5>
+            </div>
+            <div class="col-6 col-lg-6">
+                <h5>Data: <strong style="color: steelblue"><?php echo e(__data_pt($item->created_at, 1)); ?></strong></h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 mt-1">
+                <?php echo Form::select('gerar_conta_receber', 'Gerar Conta a Receber', [0 => 'Não', 1 => 'Sim'])->attrs(['class' => 'form-select']); ?>
+
+            </div>
+            <div class="col-3 mt-1">
+                <?php echo Form::text('cpf_nota', "CPF/CNPJ na nota?")->attrs(['class' => 'cpf_cnpj']); ?>
+
+            </div>
+        </div>
+        <hr>
+        <h4 class="text-center mt-2">Itens</h4>
+        <p class="mensagem-itens m-2 text-danger"></p>
+
+
+        <?php if($config && $config->confirmar_itens_prevenda): ?>
+        <div class="col-md-4 mb-2">
+            <div class="input-group input-group-merge">
+                <div class="input-group-text" data-password="false">
+                    <span class="ri-barcode-box-line"></span>
+                </div>
+                <input <?php if($item->status == 0): ?> disabled <?php endif; ?> type="text" id="inp-codigo_barras" class="form-control">
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <input type="hidden" id="pre_venda_id" name="pre_venda_id" value="<?php echo e($item->id); ?>">
+        <table class="table table-striped table-centered mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th></th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                    <?php if($config != null && $config->confirmar_itens_prevenda == 1): ?>
+                    <th>Status</th>
+                    <?php endif; ?>
+                </tr>
+            </thead>
+            <tbody>
+
+                <?php $__currentLoopData = $item->itens; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr>
+                    <td><img class="img-60" src="<?php echo e($i->produto->img); ?>"></td>
+                    <td class="produto_nome"><?php echo e($i->produto->nome); ?></td>
+                    <?php if($i->produto->unidade == 'UN'): ?>
+                    <td><?php echo e(number_format($i->quantidade,0)); ?></td>
+                    <?php else: ?>
+                    <td><?php echo e($i->quantidade); ?></td>
+                    <?php endif; ?>
+                    <td><?php echo e(__moeda($i->valor)); ?></td>
+                    <?php if($config != null && $config->confirmar_itens_prevenda == 1): ?>
+                    <td>
+                        <input type="hidden" class="line_id" value="<?php echo e($i->id); ?>">
+                        <input type="hidden" class="line_status" value="0">
+                        <input type="hidden" class="line_codigo_barras" value="<?php echo e($i->produto->codigo_barras); ?>">
+
+                        <button <?php if($item->status == 0): ?> disabled <?php endif; ?> class="btn btn-sm btn-success confirma-item">
+                            <i class="ri-check-line"></i>
+                        </button>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+            </tbody>
+        </table>
+        <h5 class="m-2">TOTAL DE PRODUTOS: <?php echo e(__moeda($item->valor_total)); ?></h5>
+    </div>
+    <hr class="mt-5">
+    <div class="row">
+        <div class="table-reponsive">
+            <h4 class="text-center">Fatura</h4>
+            <table class="table table-striped table-centered mb-0 table-dynamic">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tipo Pagamento</th>
+                        <th>Data Vencimento</th>
+                        <th>Valor</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="" class="datatable-body">
+                    <?php $total = 0; ?>
+                    <?php if(isset($item)): ?>
+                    <?php $__currentLoopData = $item->fatura; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr class="dynamic-form">
+                        <td width="300">
+                            <select name="tipo_pagamento[]" class="form-select tipo_pagamento">
+                                <option value="">Selecione..</option>
+                                <?php $__currentLoopData = App\Models\Nfe::tiposPagamento(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option <?php if($i->tipo_pagamento == $key): ?> selected <?php endif; ?> value="<?php echo e($key); ?>"><?php echo e($c); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                        </td>
+                        <td width="150">
+                            <input value="<?php echo e($i->vencimento); ?>" type="date" class="form-control" name="data_vencimento[]" id="">
+                        </td>
+                        <td width="150">
+                            <input value="<?php echo e(__moeda($i->valor_parcela)); ?>" type="tel" class="form-control moeda valor_parcela" name="valor_fatura[]">
+                        </td>
+                        <td width="70">
+                            <button class="btn btn-sm btn-danger btn-delete-row" <?php if($item->status == 0): ?> disabled <?php endif; ?>>
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php $total = $i->valor_parcela; ?>
+
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
+                    <tr class="dynamic-form">
+                        <td width="300">
+                            <select name="tipo_pagamento[]" class="form-control tipo_pagamento select2">
+                                <option value="">Selecione..</option>
+                                <?php $__currentLoopData = App\Models\Nfe::tiposPagamento(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($key); ?>"><?php echo e($c); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                        </td>
+                        <td width="150">
+                            <input value="" type="date" class="form-control" name="data_vencimento[]" id="">
+                        </td>
+                        <td width="150">
+                            <input value="" type="tel" class="form-control moeda valor_parcela" name="valor_fatura[]">
+                        </td>
+                        <td width="70">
+                            <button <?php if($item->status == 0): ?> disabled <?php endif; ?> class="btn btn-sm btn-danger btn-delete-row">
+                                <i class="ri-delete-back-2-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php if($item->status == 1): ?>
+        <div class="row">
+            <div class="col-12 m-1">
+                <button type="button" class="btn btn-info btn-sm btn-add-tr px-5">
+                    <i class="ri-add-circle-fill"></i>
+                    Adicionar pagamento
+                </button>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <div class="row">
+            <h5 class="col-4 m-3">TOTAL DA FATURA: <strong class="total_parcelas"></strong></h5>
+        </div>
+    </div>
+</div>
+<?php if($item->status == 1): ?>
+<div class="modal-footer">
+    <?php if($item->cliente_id != null): ?>
+    <button type="button" class="btn btn-primary btn-sbm" id="gerar_nfe" data-bs-dismiss="modal">Gerar NFe</button>
+    <?php endif; ?>
+
+    <button type="button" class="btn btn-success btn-sbm" id="gerar_nfce"  data-bs-dismiss="modal">Gerar NFCe</button>
+
+    <button type="button" class="btn btn-info finalizar_pre_venda btn-sbm" data-bs-dismiss="modal">Somente Finalizar</button>
+</div>
+<?php endif; ?>
+<?php /**PATH C:\FontesVersaoSLYM\resources\views/pre_venda/partials/modal_finalizar.blade.php ENDPATH**/ ?>
