@@ -1,0 +1,500 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Caixa;
+use App\Models\CategoriaProduto;
+use App\Models\Empresa;
+use App\Models\FaturaNfce;
+use App\Models\Marca;
+use App\Models\Nfce;
+use App\Models\ConfigGeral;
+use App\Models\Produto;
+use App\Models\TefMultiPlusCard;
+use App\Models\UsuarioEmissao;
+use App\Models\VendaSuspensa;
+use App\Models\User;
+use App\Models\Contigencia;
+use App\Models\UsuarioEmpresa;
+use App\Models\Funcionario;
+use App\Utils\NFCePrinterUtil;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use NFePHP\DA\NFe\CupomNaoFiscal;
+use App\Utils\EstoqueUtil;
+
+class FrontBoxController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function __construct(EstoqueUtil $util)
+    {
+        $this->util = $util;
+        $this->middleware('permission:pdv_create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:pdv_edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:pdv_view', ['only' => ['show', 'index']]);
+        $this->middleware('permission:pdv_delete', ['only' => ['destroy']]);
+    }
+
+    private function setNumeroSequencial(){
+        $docs = Nfce::where('empresa_id', request()->empresa_id)
+            ->where('numero_sequencial', null)
+            ->get();
+
+        $last = Nfce::where('empresa_id', request()->empresa_id)
+            ->orderBy('numero_sequencial', 'desc')
+            ->where('numero_sequencial', '>', 0)->first();
+        $numero = $last != null ? $last->numero_sequencial : 0;
+        $numero++;
+
+        foreach($docs as $d){
+            $d->numero_sequencial = $numero;
+            $d->save();
+            $numero++;
+        }
+    }
+
+    private function getContigencia($empresa_id){
+        $active = Contigencia::
+        where('empresa_id', $empresa_id)
+            ->where('status', 1)
+            ->where('documento', 'NFCe')
+            ->first();
+        return $active;
+    }
+
+    private function corrigeNumeros($empresa_id){
+
+        $item = UsuarioEmissao::where('usuario_empresas.empresa_id', request()->empresa_id)
+            ->join('usuario_empresas', 'usuario_empresas.usuario_id', '=', 'usuario_emissaos.usuario_id')
+            ->select('usuario_emissaos.*')
+            ->where('usuario_emissaos.usuario_id', get_id_user())
+            ->first();
+
+        if($item != null){
+            return;
+        }
+
+        $empresa = Empresa::findOrFail($empresa_id);
+        if($empresa->ambiente == 1){
+            $numero = $empresa->numero_ultima_nfce_producao;
+        }else{
+            $numero = $empresa->numero_ultima_nfce_homologacao;
+        }
+
+        if($numero){
+            Nfce::where('estado', 'novo')
+                ->where('empresa_id', $empresa_id)
+                ->update(['numero' => $numero+1]);
+        }
+    }
+
+    public function index(Request $request)
+    {
+        $this->setNumeroSequencial();
+        $this->corrigeNumeros($request->empresa_id);
+
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $cliente_id = $request->get('cliente_id');
+
+        $data = Nfce::where('empresa_id', request()->empresa_id)
+            ->when(!empty($start_date), function ($query) use ($start_date) {
+                return $query->whereDate('created_at', '>=', $start_date);
+            })
+            ->when(!empty($end_date), function ($query) use ($end_date) {
+                return $query->whereDate('created_at', '<=', $end_date);
+            })
+            ->when(!empty($cliente_id), function ($query) use ($cliente_id) {
+                return $query->where('cliente_id', $cliente_id);
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(env("PAGINACAO"));
+        $contigencia = $this->getContigencia(request()->empresa_id);
+
+        return view('front_box.index', compact('data', 'contigencia'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request)
+    {
+        if (!__isCaixaAberto()) {
+            session()->flash("flash_warning", "Abrir caixa antes de continuar!");
+            return redirect()->route('caixa.create');
+        }
+        $caixa = __isCaixaAberto();
+        $categorias = CategoriaProduto::where('empresa_id', request()->empresa_id)->get();
+
+        $abertura = Caixa::where('usuario_id', get_id_user())
+            ->where('status', 1)
+            ->first();
+
+        $config = Empresa::findOrFail(request()->empresa_id);
+        if($config == null){
+            session()->flash("flash_warning", "Configure antes de continuar!");
+            return redirect()->route('config.index');
+        }
+
+        if($config->natureza_id_pdv == null){
+            session()->flash("flash_warning", "Configure a natureza de operação padrão para continuar!");
+            return redirect()->route('config.index');
+        }
+
+        $funcionarios = Funcionario::where('empresa_id', request()->empresa_id)->get();
+
+        $config = ConfigGeral::where('empresa_id', request()->empresa_id)->first();
+        $tiposPagamento = Nfce::tiposPagamento();
+        // dd($tiposPagamento);
+        if($config != null){
+            $config->tipos_pagamento_pdv = $config != null && $config->tipos_pagamento_pdv ? json_decode($config->tipos_pagamento_pdv) : [];
+            $temp = [];
+            if(sizeof($config->tipos_pagamento_pdv) > 0){
+                foreach($tiposPagamento as $key => $t){
+                    if(in_array($t, $config->tipos_pagamento_pdv)){
+                        $temp[$key] = $t;
+                    }
+                }
+                $tiposPagamento = $temp;
+            }
+        }
+
+        $item = null;
+        $isVendaSuspensa = 0;
+        $title = 'Nova Venda - PDV';
+
+        if(isset($request->venda_suspensa)){
+            $item = VendaSuspensa::findOrfail($request->venda_suspensa);
+            $isVendaSuspensa = 1;
+            $title = 'Venda Suspensa';
+        }
+
+        $configTef = TefMultiPlusCard::where('empresa_id', request()->empresa_id)
+            ->where('status', 1)
+            ->where('usuario_id', Auth::user()->id)
+            ->first();
+
+        $view = 'front_box.create';
+        $produtos = [];
+        $marcas = [];
+        if($config != null && $config->modelo == 'compact'){
+            $view = 'front_box.create2';
+            $categorias = CategoriaProduto::where('empresa_id', request()->empresa_id)
+                ->where('categoria_id', null)
+                ->orderBy('nome', 'asc')
+                ->paginate(4);
+
+            $marcas = Marca::where('empresa_id', request()->empresa_id)
+                ->orderBy('nome', 'asc')
+                ->paginate(4);
+
+            $produtos = Produto::select('produtos.*', \DB::raw('sum(quantidade) as quantidade'))
+                ->where('empresa_id', request()->empresa_id)
+                ->where('produtos.status', 1)
+                ->where('status', 1)
+                ->leftJoin('item_nfces', 'item_nfces.produto_id', '=', 'produtos.id')
+                ->groupBy('produtos.id')
+                ->orderBy('quantidade', 'desc')
+                ->join('produto_localizacaos', 'produto_localizacaos.produto_id', '=', 'produtos.id')
+                ->where('produto_localizacaos.localizacao_id', $caixa->localizacao->id)
+                ->paginate(12);
+        }
+        return view($view, compact('categorias', 'abertura',
+            'funcionarios', 'caixa', 'config', 'tiposPagamento', 'item', 'isVendaSuspensa', 'title',
+            'configTef', 'marcas', 'produtos'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $data = Nfce::findOrFail($id);
+
+        return view('front_box.show', compact('data'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $item = Nfce::
+        with(['itens', 'cliente'])
+            ->findOrFail($id);
+        if (!__isCaixaAberto()) {
+            session()->flash("flash_warning", "Abrir caixa antes de continuar!");
+            return redirect()->route('caixa.create');
+        }
+        $categorias = CategoriaProduto::where('empresa_id', request()->empresa_id)->get();
+
+        $abertura = Caixa::where('usuario_id', get_id_user())
+            ->where('status', 1)
+            ->first();
+
+        $config = Empresa::findOrFail(request()->empresa_id);
+        if($config == null){
+            session()->flash("flash_warning", "Configure antes de continuar!");
+            return redirect()->route('config.index');
+        }
+
+        if($config->natureza_id_pdv == null){
+            session()->flash("flash_warning", "Configure a natureza de operação padrão para continuar!");
+            return redirect()->route('config.index');
+        }
+
+        $tiposPagamento = Nfce::tiposPagamento();
+        // dd($tiposPagamento);
+        if($config != null){
+            $config->tipos_pagamento_pdv = $config != null && $config->tipos_pagamento_pdv ? json_decode($config->tipos_pagamento_pdv) : [];
+            $temp = [];
+            if(sizeof($config->tipos_pagamento_pdv) > 0){
+                foreach($tiposPagamento as $key => $t){
+                    if(in_array($t, $config->tipos_pagamento_pdv)){
+                        $temp[$key] = $t;
+                    }
+                }
+                $tiposPagamento = $temp;
+            }
+        }
+
+        $funcionarios = Funcionario::where('empresa_id', request()->empresa_id)->get();
+        $cliente = $item->cliente;
+        $funcionario = $item->funcionario;
+        $caixa = __isCaixaAberto();
+        $isVendaSuspensa = 0;
+        $config = Empresa::findOrFail(request()->empresa_id);
+
+        $view = 'front_box.edit';
+        $produtos = [];
+        $marcas = [];
+        $config = ConfigGeral::where('empresa_id', request()->empresa_id)->first();
+
+        if($config != null && $config->modelo == 'compact'){
+
+            $view = 'front_box.edit2';
+            $categorias = CategoriaProduto::where('empresa_id', request()->empresa_id)
+                ->where('categoria_id', null)
+                ->orderBy('nome', 'asc')
+                ->paginate(4);
+
+            $marcas = Marca::where('empresa_id', request()->empresa_id)
+                ->orderBy('nome', 'asc')
+                ->paginate(4);
+
+            $produtos = Produto::select('produtos.*', \DB::raw('sum(quantidade) as quantidade'))
+                ->where('empresa_id', request()->empresa_id)
+                ->where('produtos.status', 1)
+                ->where('status', 1)
+                ->leftJoin('item_nfces', 'item_nfces.produto_id', '=', 'produtos.id')
+                ->groupBy('produtos.id')
+                ->orderBy('quantidade', 'desc')
+                ->join('produto_localizacaos', 'produto_localizacaos.produto_id', '=', 'produtos.id')
+                ->where('produto_localizacaos.localizacao_id', $caixa->localizacao->id)
+                ->paginate(12);
+        }
+
+        return view($view, compact('categorias', 'abertura', 'funcionarios', 'item', 'cliente', 'funcionario', 'caixa',
+            'isVendaSuspensa', 'tiposPagamento', 'config', 'produtos', 'categorias', 'marcas'));
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $item = Nfce::findOrFail($id);
+        try {
+            $descricaoLog = "#$item->numero_sequencial - R$ " . __moeda($item->total);
+            foreach ($item->itens as $i) {
+                if ($i->produto && $i->produto->gerenciar_estoque) {
+                    $this->util->incrementaEstoque($i->produto_id, $i->quantidade, $i->variacao_id, $item->local_id);
+                }
+            }
+            $item->itens()->delete();
+            $item->fatura()->delete();
+            $item->contaReceber()->delete();
+            $item->delete();
+            session()->flash("flash_success", "Venda removida!");
+
+            __createLog(request()->empresa_id, 'PDV', 'excluir', $descricaoLog);
+
+            session()->flash("flash_success", "Venda removida!");
+        } catch (\Exception $e) {
+            // echo $e->getMessage() . '<br>' . $e->getLine();
+            // die;
+            session()->flash("flash_error", 'Algo deu errado.', $e->getMessage());
+        }
+        return redirect()->route('frontbox.index');
+    }
+
+    public function destroySuspensa(string $id)
+    {
+        $item = VendaSuspensa::findOrFail($id);
+        try {
+
+            $item->itens()->delete();
+            $item->delete();
+            session()->flash("flash_success", "Registro removido!");
+        } catch (\Exception $e) {
+            // echo $e->getMessage() . '<br>' . $e->getLine();
+            // die;
+            session()->flash("flash_error", 'Algo deu errado.', $e->getMessage());
+        }
+        return redirect()->back();
+    }
+
+    public function imprimirNaoFiscal($id)
+    {
+        $item = Nfce::findOrFail($id);
+        $idUsuario = get_id_user();
+        $configUsuario = User::findOrFail($idUsuario);
+        $fatura = FaturaNfce::where('nfce_id', $item->id)->first();
+        $config = Empresa::findOrFail($item->empresa_id);
+        $impressora = '';
+        if ($configUsuario->nome_impressora){
+            $impressora = $configUsuario->nome_impressora;
+            $connector = new NetworkPrintConnector($impressora, 9100);
+
+
+            // Criado instância do Printer
+            $printer = new Printer($connector);
+            $printerUtil = new NFCePrinterUtil();
+            $printerUtil->imprimirNaoFiscal($printer, $item, $fatura);
+            $printer->close();
+            return redirect()->back();
+        }else {
+            $config = __objetoParaEmissao($config, $item->local_id);
+
+            if (strlen($config->fone) > 0) {
+                if (strlen($config->fone) == 11) {
+                    $config->fone = $this->formatField($config->fone, "(##)#####-####");
+                } else {
+                    $config->fone = $this->formatField($config->fone, "(##) ####-####");
+                }
+            }
+
+            if ($item->cliente_cpf_cnpj == '') {
+                $item->cliente_cpf_cnpj = '000.000.000-00';
+            }
+            if ($item->cliente_nome == '') {
+                $item->cliente_nome = 'CONSUMIDOR FINAL';
+            }
+
+            $item->tipo_pagamento = 'Dinheiro';
+
+            $p = view('cupom_nao_fiscal/print_limpo')
+                ->with('config', $config)
+                ->with('venda', $item);
+            return $p;
+        }
+    }
+    protected function formatField($campo = '', $mascara = '')
+    {
+        if ($campo == '' || $mascara == '') {
+            return $campo;
+        }
+        //remove qualquer formatação que ainda exista
+        $sLimpo = preg_replace("(/[' '-./ t]/)", '', $campo);
+        // pega o tamanho da string e da mascara
+        $tCampo = strlen($sLimpo);
+        $tMask = strlen($mascara);
+        if ($tCampo > $tMask) {
+            $tMaior = $tCampo;
+        } else {
+            $tMaior = $tMask;
+        }
+        //contar o numero de cerquilhas da mascara
+        $aMask = str_split($mascara);
+        $z = 0;
+        $flag = false;
+        foreach ($aMask as $letra) {
+            if ($letra == '#') {
+                $z++;
+            }
+        }
+        if ($z > $tCampo) {
+            //o campo é menor que esperado
+            $flag = true;
+        }
+        //cria uma variável grande o suficiente para conter os dados
+        $sRetorno = '';
+        $sRetorno = str_pad($sRetorno, $tCampo + $tMask, " ", STR_PAD_LEFT);
+        //pega o tamanho da string de retorno
+        $tRetorno = strlen($sRetorno);
+        //se houve entrada de dados
+        if ($sLimpo != '' && $mascara != '') {
+            //inicia com a posição do ultimo digito da mascara
+            $x = $tMask;
+            $y = $tCampo;
+            $cI = 0;
+            for ($i = $tMaior - 1; $i >= 0; $i--) {
+                if ($cI < $z) {
+                    // e o digito da mascara é # trocar pelo digito do campo
+                    // se o inicio da string da mascara for atingido antes de terminar
+                    // o campo considerar #
+                    if ($x > 0) {
+                        $digMask = $mascara[--$x];
+                    } else {
+                        $digMask = '#';
+                    }
+                    //se o fim do campo for atingido antes do fim da mascara
+                    //verificar se é ( se não for não use
+                    if ($digMask == '#') {
+                        $cI++;
+                        if ($y > 0) {
+                            $sRetorno[--$tRetorno] = $sLimpo[--$y];
+                        } else {
+                            //$sRetorno[--$tRetorno] = '';
+                        }
+                    } else {
+                        if ($y > 0) {
+                            $sRetorno[--$tRetorno] = $mascara[$x];
+                        } else {
+                            if ($mascara[$x] == '(') {
+                                $sRetorno[--$tRetorno] = $mascara[$x];
+                            }
+                        }
+                        $i++;
+                    }
+                }
+            }
+            if (!$flag) {
+                if ($mascara[0] != '#') {
+                    $sRetorno = '(' . trim($sRetorno);
+                }
+            }
+            return trim($sRetorno);
+        } else {
+            return '';
+        }
+    }
+
+//    public function imprimirNaoFiscal($id)
+//    {
+//        $item = Nfce::findOrFail($id);
+//        $config = Empresa::where('id', $item->empresa_id)
+//            ->first();
+//
+//        $config = __objetoParaEmissao($config, $item->local_id);
+//
+//        $usuario = UsuarioEmpresa::find(get_id_user());
+//        $cupom = new CupomNaoFiscal($item, $config, 0);
+//
+//        $pdf = $cupom->render($config->logo ? public_path('/uploads/logos/') . $config->logo : null);
+//        header("Content-Disposition: ; filename=CUPOM.pdf");
+//        return response($pdf)
+//            ->header('Content-Type', 'application/pdf');
+//    }
+}
