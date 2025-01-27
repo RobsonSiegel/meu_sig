@@ -1,0 +1,1 @@
+INSERT INTO u922874047_new_meusig.roles (id, name, description, guard_name, empresa_id, is_default, type_user, created_at, updated_at) VALUES (8, 'Bronze', 'Permissões do plano Bronze', 'web', 5, 0, 2, '2024-06-26 13:31:49', '2024-06-26 13:31:49');

@@ -1,0 +1,14 @@
+Como acessar o Meu SIG como ADM (SIG).
+
+https://new.meusig.com.br/login
+
+Usuário: admin@meusig.com.br
+Senha: 312507
+
+Ao efetuar o login, será aberto o sistema na tela de Graficos do sistema.
+Para navegar na parte administrativa do sistema, basta ir na opção * Super, que fica no cano esquerdo superior.
+Nela estará todas as ferramentas administrativas do sistema, 
+Empresas
+Planos
+Perfis
+Financeiro, entre outras funcionalidades.

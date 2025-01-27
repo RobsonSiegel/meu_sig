@@ -1,0 +1,203 @@
+1,usuarios_view,Visualiza usuários,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+2,usuarios_create,Cria usuário,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+3,usuarios_edit,Edita usuário,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+4,usuarios_delete,Deleta usuário,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+5,produtos_view,Visualiza produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+6,produtos_create,Cria produto,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+7,produtos_edit,Edita produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+8,produtos_delete,Deleta produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+9,estoque_view,Visualiza estoque,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+10,estoque_create,Cria estoque,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+11,estoque_edit,Edita estoque,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+12,estoque_delete,Deleta estoque,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+13,variacao_view,Visualiza variação,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+14,variacao_create,Cria variação,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+15,variacao_edit,Edita variação,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+16,variacao_delete,Deleta variação,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+17,categoria_produtos_view,Visualiza categoria de produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+18,categoria_produtos_create,Cria categoria de produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+19,categoria_produtos_edit,Edita categoria de produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+20,categoria_produtos_delete,Deleta categoria de produtos,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+21,marcas_view,Visualiza marca,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+22,marcas_create,Cria marca,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+23,marcas_edit,Edita marca,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+24,marcas_delete,Deleta marca,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+25,lista_preco_view,Visualiza lista de preços,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+26,lista_preco_create,Cria lista de preços,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+27,lista_preco_edit,Edita lista de preços,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+28,lista_preco_delete,Deleta lista de preços,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+29,config_produto_fiscal_view,Visualiza configuração fiscal produto,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+30,config_produto_fiscal_create,Cria configuração fiscal produto,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+31,config_produto_fiscal_edit,Edita configuração fiscal produto,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+32,config_produto_fiscal_delete,Deleta configuração fiscal produto,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+33,atribuicoes_view,Visualiza atribuições,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+34,atribuicoes_create,Cria atribuição,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+35,atribuicoes_edit,Edita atribuições,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+36,atribuicoes_delete,Deleta atribuições,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+37,clientes_view,Visualiza clientes,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+38,clientes_create,Cria cliente,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+39,clientes_edit,Edita cliente,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+40,clientes_delete,Deleta cliente,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+41,fornecedores_view,Visualiza fornecedores,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+42,fornecedores_create,Cria fornecedor,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+43,fornecedores_edit,Edita fornecedor,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+44,fornecedores_delete,Deleta fornecedor,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+45,transportadoras_view,Visualiza transportadora,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+46,transportadoras_create,Cria transportadora,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+47,transportadoras_edit,Edita transportadora,web,2024-07-24 15:43:03,2024-07-24 15:43:03
+48,transportadoras_delete,Deleta transportadora,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+49,nfe_view,Visualiza NFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+50,nfe_create,Cria NFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+51,nfe_edit,Edita NFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+52,nfe_delete,Deleta NFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+53,nfe_inutiliza,Inutiliza NFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+54,nfe_transmitir,Transmitir NFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+55,orcamento_view,Visualiza Orçamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+56,orcamento_create,Cria Orçamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+57,orcamento_edit,Edita Orçamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+58,orcamento_delete,Deleta Orçamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+59,nfce_view,Visualiza NFCe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+60,nfce_create,Cria NFCe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+61,nfce_edit,Edita NFCe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+62,nfce_delete,Deleta NFCe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+63,nfce_transmitir,Transmitir NFCe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+64,nfce_inutiliza,Inutiliza NFce,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+65,cte_view,Visualiza CTe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+66,cte_create,Cria CTe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+67,cte_edit,Edita CTe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+68,cte_delete,Deleta CTe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+69,cte_os_view,Visualiza CTeOs,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+70,cte_os_create,Cria CTeOs,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+71,cte_os_edit,Edita CTeOs,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+72,cte_os_delete,Deleta CTeOs,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+73,mdfe_view,Visualiza MDFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+74,mdfe_create,Cria MDFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+75,mdfe_edit,Edita MDFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+76,mdfe_delete,Deleta MDFe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+77,nfse_view,Visualiza NFSe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+78,nfse_create,Cria NFSe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+79,nfse_edit,Edita NFSe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+80,nfse_delete,Deleta NFSe,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+81,pdv_view,Visualiza PDV,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+82,pdv_create,Cria PDV,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+83,pdv_edit,Edita PDV,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+84,pdv_delete,Deleta PDV,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+85,pre_venda_view,Visualiza pré venda,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+86,pre_venda_create,Cria pré venda,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+87,pre_venda_edit,Edita pré venda,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+88,pre_venda_delete,Deleta pré venda,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+89,agendamento_view,Visualiza agendamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+90,agendamento_create,Cria agendamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+91,agendamento_edit,Edita agendamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+92,agendamento_delete,Deleta agendamento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+93,servico_view,Visualiza serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+94,servico_create,Cria serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+95,servico_edit,Edita serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+96,servico_delete,Deleta serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+97,categoria_servico_view,Visualiza categoria de serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+98,categoria_servico_create,Cria categoria de serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+99,categoria_servico_edit,Edita categoria de serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+100,categoria_servico_delete,Deleta categoria de serviço,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+101,veiculos_view,Visualiza veículo,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+102,veiculos_create,Cria veículo,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+103,veiculos_edit,Edita veículo,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+104,veiculos_delete,Deleta veículo,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+105,atendimentos_view,Visualiza atendimento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+106,atendimentos_create,Cria atendimento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+107,atendimentos_edit,Edita atendimento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+108,atendimentos_delete,Deleta atendimento,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+109,conta_pagar_view,Visualiza conta a pagar,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+110,conta_pagar_create,Cria conta a pagar,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+111,conta_pagar_edit,Edita conta a pagar,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+112,conta_pagar_delete,Deleta conta a pagar,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+113,conta_receber_view,Visualiza conta a receber,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+114,conta_receber_create,Cria conta a receber,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+115,conta_receber_edit,Edita conta a receber,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+116,conta_receber_delete,Deleta conta a receber,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+117,cardapio_view,Visualiza cárdapio,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+118,controle_acesso_view,Visualiza controle de acesso,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+119,controle_acesso_create,Cria controle de acesso,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+120,controle_acesso_edit,Edita controle de acesso,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+121,controle_acesso_delete,Deleta controle de acesso,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+122,arquivos_xml_view,Visualiza arquivos xml,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+123,natureza_operacao_view,Visualiza natureza de operação,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+124,natureza_operacao_create,Cria natureza de operação,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+125,natureza_operacao_edit,Edita natureza de operação,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+126,natureza_operacao_delete,Deleta natureza de operação,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+127,emitente_view,Visualiza emitente,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+128,compras_view,Visualiza compras,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+129,compras_create,Cria compras,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+130,compras_edit,Edita compras,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+131,compras_delete,Deleta compras,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+132,manifesto_view,Visualiza manifesto compras,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+133,cotacao_view,Visualiza cotação,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+134,cotacao_create,Cria cotação,web,2024-07-24 15:43:04,2024-07-24 15:43:04
+135,cotacao_edit,Edita cotação,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+136,cotacao_delete,Deleta cotação,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+137,devolucao_view,Visualiza devolução,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+138,devolucao_create,Cria devolução,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+139,devolucao_edit,Edita devolução,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+140,devolucao_delete,Deleta devolução,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+141,funcionario_view,Visualiza funcionário,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+142,funcionario_create,Cria funcionário,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+143,funcionario_edit,Edita funcionário,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+144,funcionario_delete,Deleta funcionário,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+145,apuracao_mensal_view,Visualiza Apuração mensal,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+146,apuracao_mensal_create,Cria Apuração mensal,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+147,apuracao_mensal_edit,Edita Apuração mensal,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+148,apuracao_mensal_delete,Deleta Apuração mensal,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+149,ecommerce_view,Visualiza ecommerce,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+150,delivery_view,Visualiza delivery,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+151,mercado_livre_view,Visualiza mercado livre,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+152,nuvem_shop_view,Visualiza nuvem shop,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+153,relatorio_view,Visualiza relatório,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+154,caixa_view,Visualiza caixa,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+155,contas_empresa_view,Visualiza contas da empresa,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+156,contas_empresa_create,Cria contas da empresa,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+157,contas_empresa_edit,Edita contas da empresa,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+158,contas_empresa_delete,Deleta contas da empresa,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+159,contas_boleto_view,Visualiza contas de boleto,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+160,contas_boleto_create,Cria contas de boleto,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+161,contas_boleto_edit,Edita contas de boleto,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+162,contas_boleto_delete,Deleta contas de boleto,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+163,boleto_view,Visualiza boleto,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+164,boleto_create,Cria boleto,web,2024-07-24 15:43:05,2024-07-24 15:43:05
+165,boleto_edit,Edita boleto,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+166,boleto_delete,Deleta boleto,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+167,taxa_pagamento_view,Visualiza taxa de pagamento,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+168,taxa_pagamento_create,Cria taxa de pagamento,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+169,taxa_pagamento_edit,Edita taxa de pagamento,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+170,taxa_pagamento_delete,Deleta taxa de pagamento,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+171,ordem_servico_view,Visualiza ordem de serviço,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+172,ordem_servico_create,Cria ordem de serviço,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+173,ordem_servico_edit,Edita ordem de serviço,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+174,ordem_servico_delete,Deleta ordem de serviço,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+175,difal_view,Visualiza difal,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+176,difal_create,Cria difal,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+177,difal_edit,Edita difal,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+178,difal_delete,Deleta difal,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+179,cashback_config_view,Visualiza cashback config,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+180,localizacao_view,Visualiza localização,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+181,localizacao_create,Cria localização,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+182,localizacao_edit,Edita localização,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+183,localizacao_delete,Deleta localização,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+184,transferencia_estoque_view,Visualiza transferência de estoque,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+185,transferencia_estoque_create,Cria transferência de estoque,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+186,transferencia_estoque_delete,Deleta transferência de estoque,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+187,config_reserva_view,Visualiza configuração de reserva,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+188,categoria_acomodacao_view,Visualiza categoria de acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+189,categoria_acomodacao_create,Cria categoria de acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+190,categoria_acomodacao_edit,Edita categoria de acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+191,categoria_acomodacao_delete,Deleta categoria de acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+192,acomodacao_view,Visualiza acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+193,acomodacao_create,Cria acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+194,acomodacao_edit,Edita acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+195,acomodacao_delete,Deleta acomodação,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+196,frigobar_view,Visualiza frigobar,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+197,frigobar_create,Cria frigobar,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+198,frigobar_edit,Edita frigobar,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+199,frigobar_delete,Deleta frigobar,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+200,reserva_view,Visualiza reserva,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+201,reserva_create,Cria reserva,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+202,reserva_edit,Edita reserva,web,2024-07-24 15:43:06,2024-07-24 15:43:06
+203,reserva_delete,Deleta reserva,web,2024-07-24 15:43:06,2024-07-24 15:43:06

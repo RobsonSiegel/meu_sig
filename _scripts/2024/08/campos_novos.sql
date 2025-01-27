@@ -1,0 +1,25 @@
+alter table config_gerals add column mostra_campos_extra_fechamento_caixa boolean default 0 after balanca_valor_peso;
+alter table config_gerals add column usa_caixa_cego boolean default 0 after mostra_campos_extra_fechamento_caixa;
+alter table config_gerals add column tipo_imp_fechamento_caixa varchar(20) default '01' after usa_caixa_cego;
+alter table caixas add column valor_cartao_credito decimal(10,2) default 0 after valor_outros;
+alter table caixas add column valor_cartao_debito decimal(10,2) default 0 after valor_cartao_credito;
+alter table caixas add column valor_pix decimal(10,2) default 0 after valor_cartao_debito;
+alter table users add column nome_email varchar(50) default '' after tipo_contador;
+alter table users add column host_email varchar(50) default '' after nome_email;
+alter table users add column envio_email varchar(50) default '' after host_email;
+alter table users add column senha_email varchar(50) default '' after envio_email;
+alter table users add column porta_email varchar(50) default '' after senha_email;
+alter table users add column criptograma_email enum('ssl', 'tls') after porta_email;
+alter table users add column autenticacao_email boolean default 0 after criptograma_email;
+alter table users add column smtp_debug boolean default 0 after autenticacao_email;
+alter table nves add column enviado_email boolean default 0 after local_id;
+alter table conta_boletos add column nosso_numero varchar(20) default null after tipo;
+alter table conta_pagars add column numero_documento varchar(50) default null after empresa_id;
+alter table conta_recebers add column numero_documento varchar(50) default null after empresa_id;
+alter table boletos add column enviado_email boolean default 0 after tipo;
+alter table config_gerals add column percentual_maximo_desconto decimal(10,2) default 0 after tipo_imp_fechamento_caixa;
+alter table produtos add column mercado_livre_modelo varchar(100) default null after mercado_livre_youtube;
+alter table produtos add column mercado_livre_composicao varchar(100) default null after mercado_livre_modelo;
+alter table produtos add column mercado_livre_linha varchar(100) default null after mercado_livre_composicao;
+alter table users add column nome_impressora varchar(50) default '' after smtp_debug;
+

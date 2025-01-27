@@ -1,0 +1,9 @@
+delete from movimentacao_produtos where produto_id in (select id from produtos where empresa_id = 3);
+delete from estoques where produto_id in (select id from produtos where empresa_id = 3);
+delete from produto_localizacaos where produto_id in (select id from produtos where empresa_id = 3);
+delete from item_nves where produto_id in (select id from produtos where empresa_id = 3);
+delete from nves where empresa_id = 3;
+delete from item_nfces where produto_id in (select id from produtos where empresa_id = 3);
+delete from fatura_nfces where nfce_id in (select id from nfces where empresa_id = 3);
+delete from nfces where empresa_id = 3;
+delete  from produtos where empresa_id = 3;

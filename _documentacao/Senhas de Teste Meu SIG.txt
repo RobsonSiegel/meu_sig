@@ -1,0 +1,16 @@
+Usuário e senhas por Segmento:
+
+Mercado e Mercarias:
+
+Email: mercado@meusig.com.br
+Senha: 123456
+
+Loja de Roupas:
+
+Email: lojaroupas@meusig.com.br
+Senha: 123456
+
+Materiais de Construção:
+
+Email: matconstrucao@meusig.com.br
+Senha: 123456
